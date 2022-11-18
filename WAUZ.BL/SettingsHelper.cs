@@ -5,40 +5,41 @@ namespace WAUZ.BL
 {
     public sealed class SettingsHelper : ISettingsHelper
     {
-        public string Location { get; } = string.Empty;
-        
-        public IDictionary<string, string> Settings { get; } = new Dictionary<string, string>();
+        private readonly string xmlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AppDataMBODM", "WAUZ.xml");
 
-        public SettingsHelper()
+        private readonly IPathHelper pathHelper;
+
+        public SettingsHelper(IPathHelper pathHelper)
         {
-            Location = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "WAUZ.xml");
+            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
         }
+
+        public IDictionary<string, string> Settings { get; } = new Dictionary<string, string>();
 
         public void Load()
         {
-            if (!File.Exists(Location))
+            if (!File.Exists(xmlFile))
             {
                 return;
             }
 
-            var document = XDocument.Load(Location);
+            var document = XDocument.Load(xmlFile);
 
-            document?.Element("wauz")?.Elements()?.ToList().ForEach(element => Settings.Add(element.Name.ToString(), element.Value.ToString()));
+            var elements = document?.Element("wauz")?.Elements() ?? throw new InvalidOperationException("Invalid file format.");
+
+            foreach (var element in elements)
+            {
+                Settings.Add(element.Name.ToString(), element.Value.ToString());
+            }
         }
 
         public void Save()
         {
-            var document = new XDocument(
-                new XElement("wauz",
-                    Settings.Select(kvp => new XElement(kvp.Key, kvp.Value))));
-
-            EnsureClosingTags(document);
-
-            var folder = Path.GetDirectoryName(Location) ?? string.Empty;
+            var folder = pathHelper.GetParentDirectoryFromPath(xmlFile);
 
             if (folder == string.Empty)
             {
-                throw new InvalidOperationException("Todo - GetDirectoryName() returned empty string.");
+                throw new InvalidOperationException("Could not determine folder.");
             }
 
             if (!Directory.Exists(folder))
@@ -46,29 +47,15 @@ namespace WAUZ.BL
                 Directory.CreateDirectory(folder);
             }
 
-            using var writer = XmlWriter.Create(Location, new()
+            var document = new XDocument(new XElement("wauz", Settings.Select(kvp => new XElement(kvp.Key, kvp.Value))));
+
+            using var writer = XmlWriter.Create(xmlFile, new()
             {
                 Indent = true,
                 IndentChars = "\t",
             });
 
             document.Save(writer);
-        }
-
-        private static void EnsureClosingTags(XDocument document)
-        {
-            // The written XML should contain closing tags, also for empty elements.
-            // To achieve this, it seems to be best practice in LINQ-to-XML, to put
-            // an empty string into an empty element. This enforces the closing tag.
-            // So we have to make sure every empty element contains an empty string.
-            
-            foreach (var element in document.Descendants())
-            {
-                if (element.IsEmpty)
-                {
-                    element.Value = string.Empty;
-                }
-            }
         }
     }
 }

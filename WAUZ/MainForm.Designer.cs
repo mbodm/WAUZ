@@ -105,9 +105,9 @@
             this.labelSource.Location = new System.Drawing.Point(9, 25);
             this.labelSource.Margin = new System.Windows.Forms.Padding(0);
             this.labelSource.Name = "labelSource";
-            this.labelSource.Size = new System.Drawing.Size(46, 15);
+            this.labelSource.Size = new System.Drawing.Size(84, 15);
             this.labelSource.TabIndex = 0;
-            this.labelSource.Text = "Source:";
+            this.labelSource.Text = "Source-Folder:";
             // 
             // labelDest
             // 
@@ -115,9 +115,9 @@
             this.labelDest.Location = new System.Drawing.Point(9, 116);
             this.labelDest.Margin = new System.Windows.Forms.Padding(0);
             this.labelDest.Name = "labelDest";
-            this.labelDest.Size = new System.Drawing.Size(70, 15);
+            this.labelDest.Size = new System.Drawing.Size(108, 15);
             this.labelDest.TabIndex = 3;
-            this.labelDest.Text = "Destination:";
+            this.labelDest.Text = "Destination-Folder:";
             // 
             // labelProgressBar
             // 

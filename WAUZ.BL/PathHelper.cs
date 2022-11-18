@@ -26,6 +26,36 @@
             return Directory.Exists(path) && HasDirectoryAttribute(path);
         }
 
+        public string GetParentDirectoryFromPath(string path)
+        {
+            path = Guard(path);
+
+            // In .NET the Path.GetDirectoryName() method is used to get that directory, which
+            // contains the file or folder, a given path is pointing to. The method is wrapped
+            // here, a) to make above more obvious to me (in future) and b) cause of next part.
+            // Important: The method not cares, if that file or folder (given path is pointing
+            // to) really exists. The method solely relys on the path string itself. Therefore
+            // the design of this helper method also takes care about this fact. Otherwise bad
+            // things may happen, if above fact is not in mind, while using this helper method.
+            // Hiding the 2 possible exceptions, is also intended design of this helper method.
+
+            if (!File.Exists(path) && !Directory.Exists(path))
+            {
+                return string.Empty;
+            }
+
+            try
+            {
+                var parentDirectory = Path.GetDirectoryName(path);
+
+                return string.IsNullOrEmpty(parentDirectory) ? string.Empty : Path.TrimEndingDirectorySeparator(parentDirectory);
+            }
+            catch
+            {
+                return string.Empty;
+            }
+        }
+
         public string GetFileOrDirectoryNameFromPath(string path)
         {
             path = Guard(path);

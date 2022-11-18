@@ -70,9 +70,11 @@ sourceFolderEntries.ToList().ForEach(e => Console.WriteLine(Path.GetFileName(e) 
 //Console.WriteLine("Files:");
 //var fileNames = Directory.GetFiles(testDir).Select(f => Path.GetFileName(f));
 //foreach (var f in fileNames) Console.WriteLine(f);
-
-var businessLogic = new BusinessLogic(new SettingsHelper(), new ZipHelper(new FileSystemHelper(new PathHelper())));
+var pathHelper = new PathHelper();
+var businessLogic = new BusinessLogic(new SettingsHelper(pathHelper), new ZipHelper(new FileSystemHelper(pathHelper)));
 businessLogic.LoadSettings();
 Console.WriteLine($"SourceFolder: {businessLogic.SourceFolder}");
 Console.WriteLine($"DestFolder: {businessLogic.DestFolder}");
+businessLogic.SourceFolder = string.Empty;
+businessLogic.DestFolder = string.Empty;
 businessLogic.SaveSettings();

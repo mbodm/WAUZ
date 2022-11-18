@@ -23,7 +23,6 @@ namespace WAUZ.BL
             if (string.IsNullOrWhiteSpace(destFolder))
             {
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
-
             }
 
             // Rely on full paths only, with trailing slash/backslash trimmed.

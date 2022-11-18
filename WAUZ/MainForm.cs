@@ -39,29 +39,13 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            var sourceFolder = Path.TrimEndingDirectorySeparator(textBoxSource.Text.Trim());
-            var destFolder = Path.TrimEndingDirectorySeparator(textBoxDest.Text.Trim());
+            businessLogic.SourceFolder = Path.TrimEndingDirectorySeparator(textBoxSource.Text.Trim());
+            businessLogic.DestFolder = Path.TrimEndingDirectorySeparator(textBoxDest.Text.Trim());
 
-            if (string.IsNullOrEmpty(sourceFolder))
-            {
-                ShowError("Todo Source");
-
-                return;
-            }
-
-            if (string.IsNullOrEmpty(destFolder))
-            {
-                ShowError("Todo Dest");
-
-                return;
-            }
-
-            var zipFiles = Directory.GetFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
-
-            progressBar.Maximum = zipFiles.Length;
+            progressBar.Maximum = Directory.GetFiles(businessLogic.SourceFolder, "*.zip", SearchOption.TopDirectoryOnly).Length;
             progressBar.Value = progressBar.Minimum;
 
-            await businessLogic.UnzipFiles(new Progress<ProgressData>(_ =>
+            await businessLogic.Unzip(new Progress<ProgressData>(_ =>
             {
                 progressBar.Value++;
                 labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
@@ -77,7 +61,10 @@ namespace WAUZ
                 initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             }
 
-            using var dialog = new FolderBrowserDialog { InitialDirectory = initialDirectory };
+            using var dialog = new FolderBrowserDialog
+            { 
+                InitialDirectory = initialDirectory
+            };
 
             if (dialog.ShowDialog() == DialogResult.Cancel)
             {
@@ -91,5 +78,23 @@ namespace WAUZ
         {
             MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
+
+        // Todo: Im Auswahl-Dialog, wenn vorhanden, gleich das AddOns Folder anzeigen.
+        // Nein, das gehört nicht in die BusinessLogic (weil sonst leere Settings immer am Ende das drin haben).
+
+        //private static string GetDefaultDestFolder()
+        //{
+        //    var wowAddonsDefaultFolder = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
+
+        //    if (Directory.Exists(wowAddonsDefaultFolder))
+        //    {
+        //        // Just returning the string itself, is also possible, of course. But it felt better to me,
+        //        // when the string flows through the Path methods, cause of the "Program Files (x86)" part.
+
+        //        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(wowAddonsDefaultFolder));
+        //    }
+
+        //    return string.Empty;
+        //}
     }
 }

@@ -13,115 +13,108 @@
 
         public string SourceFolder { get; set; } = string.Empty;
         public string DestFolder { get; set; } = string.Empty;
-        
+
         public void LoadSettings()
         {
-            var desktopFolder = Path.TrimEndingDirectorySeparator(
-                Path.GetFullPath(
-                    Environment.GetFolderPath(
-                        Environment.SpecialFolder.Desktop)));
-
-            settingsHelper.Load();
-            
-            if (settingsHelper.Settings.TryGetValue(nameof(SourceFolder), out var sourceFolder))
+            try
             {
-                SourceFolder = sourceFolder;
+                settingsHelper.Load();
             }
-            else
+            catch (Exception e)
             {
-                // Default source folder
+                LogException(e);
 
-                SourceFolder = desktopFolder;
+                throw new InvalidOperationException("An error occurred while loading the settings (see log file for details).");
             }
 
-            if (settingsHelper.Settings.TryGetValue(nameof(DestFolder), out var destFolder))
-            {
-                DestFolder = destFolder;
-            }
-            else
-            {
-                // Default dest folder
+            // It is possible to use the null-forgiving operator ("!") here, or declare the out variable as nullable, like mentioned in this post:
+            // https://stackoverflow.com/questions/58681729/net-non-nullable-reference-type-and-out-parameters
 
-                var wowAddonsDefaultFolder = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
-
-                if (Directory.Exists(wowAddonsDefaultFolder))
-                {
-                    DestFolder = Path.TrimEndingDirectorySeparator(
-                        Path.GetFullPath(
-                            wowAddonsDefaultFolder));
-                }
-                else
-                {
-                    DestFolder = desktopFolder;
-                }
-            }
+            SourceFolder = settingsHelper.Settings.TryGetValue(nameof(SourceFolder), out string? sourceFolder) ? sourceFolder : string.Empty;
+            DestFolder = settingsHelper.Settings.TryGetValue(nameof(DestFolder), out string? destFolder) ? destFolder : string.Empty;
         }
 
         public void SaveSettings()
         {
-            settingsHelper.Settings["SourceFolder"] = SourceFolder;
-            settingsHelper.Settings["DestFolder"] = DestFolder;
+            settingsHelper.Settings[nameof(SourceFolder)] = SourceFolder;
+            settingsHelper.Settings[nameof(DestFolder)] = DestFolder;
 
             settingsHelper.Save();
         }
 
-        public async Task UnzipFiles(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
+        // Todo: Wann mach "fullpath und trimending von SourceFolder und DestFolder ?
+        // - Beim zuweisen ?
+        // - Im Unzip ?
+        // - Darauf verlassen dass es korrekt von aussen kommt ?
+        // - Soll es zurückgeschrieben werden und im SettingsFile landen oder nur genutzt werden ?
+
+        public async Task Unzip(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
-            var zipFiles = GetZipFiles();
+            Validate();
 
-            var destFolder = GetDestFolder();
-
-            var tasks = zipFiles.Select(zipFile => Task.Run(() =>
+            var tasks = GetZipFiles().Select(zipFile => Task.Run(() =>
             {
-                zipHelper.UnzipFile(zipFile, destFolder);
+                zipHelper.UnzipFile(zipFile, DestFolder);
 
-                var progessData = new ProgressData
+                progress?.Report(new()
                 {
                     ZipFile = zipFile,
-                    DestFolder = destFolder
-                };
-
-                progress?.Report(progessData);
-            }));
+                    DestFolder = DestFolder
+                });
+            },
+            cancellationToken));
 
             await Task.WhenAll(tasks);
         }
 
-        private IEnumerable<string> GetZipFiles()
+        private static void LogException(Exception e)
+        {
+            // Todo: Create and use logger.
+        }
+
+        private void Validate()
         {
             if (string.IsNullOrWhiteSpace(SourceFolder))
             {
-                throw new InvalidOperationException("Todo - Empty source folder.");
+                throw new InvalidOperationException("Source folder missing.");
             }
 
             if (!Directory.Exists(SourceFolder))
             {
-                throw new InvalidOperationException("Todo - Source folder not exists.");
+                throw new InvalidOperationException("Source folder not exists.");
             }
 
-            var zipFiles = Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
-
-            if (!zipFiles.Any())
-            {
-                throw new InvalidOperationException("Todo - Source folder not contains any zip files.");
-            }
-
-            return zipFiles;
-        }
-
-        private string GetDestFolder()
-        {
             if (string.IsNullOrWhiteSpace(DestFolder))
             {
-                throw new InvalidOperationException("Todo - Empty dest folder.");
+                throw new InvalidOperationException("Destination folder missing.");
             }
 
             if (!Directory.Exists(DestFolder))
             {
-                throw new InvalidOperationException("Todo - Dest folder not exists.");
+                throw new InvalidOperationException("Destination folder not exists.");
             }
 
-            return DestFolder;
+            var maxPathLength = 200;
+
+            if (SourceFolder.Length > maxPathLength)
+            {
+                throw new InvalidOperationException("Source folder path is too long. Make sure given path is smaller than 200 characters.");
+            }
+
+            if (DestFolder.Length > maxPathLength)
+            {
+                throw new InvalidOperationException("Destination folder path is too long. Make sure given path is smaller than 200 characters.");
+            }
+
+            if (!GetZipFiles().Any())
+            {
+                throw new InvalidOperationException("Source folder not contains any zip files.");
+            }
+        }
+
+        private IEnumerable<string> GetZipFiles()
+        {
+            return Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
         }
     }
 }

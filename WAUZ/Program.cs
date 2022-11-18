@@ -13,7 +13,8 @@ namespace WAUZ
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm(new BusinessLogic(new ZipHelper(new FileSystemHelper(new PathHelper())))));
+            var pathHelper = new PathHelper();
+            Application.Run(new MainForm(new BusinessLogic(new SettingsHelper(pathHelper), new ZipHelper(new FileSystemHelper(pathHelper)))));
         }
     }
 }
