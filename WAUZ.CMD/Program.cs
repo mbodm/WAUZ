@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using WAUZ.BL;
 
 Console.WriteLine("Hello, World!");
 //var dir = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
@@ -69,3 +70,9 @@ sourceFolderEntries.ToList().ForEach(e => Console.WriteLine(Path.GetFileName(e) 
 //Console.WriteLine("Files:");
 //var fileNames = Directory.GetFiles(testDir).Select(f => Path.GetFileName(f));
 //foreach (var f in fileNames) Console.WriteLine(f);
+
+var businessLogic = new BusinessLogic(new SettingsHelper(), new ZipHelper(new FileSystemHelper(new PathHelper())));
+businessLogic.LoadSettings();
+Console.WriteLine($"SourceFolder: {businessLogic.SourceFolder}");
+Console.WriteLine($"DestFolder: {businessLogic.DestFolder}");
+businessLogic.SaveSettings();

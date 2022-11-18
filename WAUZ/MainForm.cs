@@ -61,7 +61,7 @@ namespace WAUZ
             progressBar.Maximum = zipFiles.Length;
             progressBar.Value = progressBar.Minimum;
 
-            await businessLogic.UnzipFiles(zipFiles, textBoxDest.Text.Trim(), new Progress<ProgressData>(_ =>
+            await businessLogic.UnzipFiles(new Progress<ProgressData>(_ =>
             {
                 progressBar.Value++;
                 labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";

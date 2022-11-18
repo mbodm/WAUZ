@@ -11,4 +11,8 @@
     <AssemblyName>wauzcmd</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WAUZ.BL\WAUZ.BL.csproj" />
+  </ItemGroup>
+
 </Project>
