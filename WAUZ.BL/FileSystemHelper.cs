@@ -25,8 +25,8 @@
 
             // Rely on full paths only, with trailing slash/backslash trimmed.
 
-            sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceFolder.Trim()));
-            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder.Trim()));
+            sourceFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(sourceFolder);
+            destFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(destFolder);
 
             // Create tuples, where every tuple represents a source path and
             // a corresponding destination path, to a file or to a directory.
@@ -72,7 +72,7 @@
             // the output paths. Therefore the first LINQ Select() call may end up as unnecessary here.
 
             return Directory.EnumerateFileSystemEntries(sourceFolder).
-                Select(sourceEntry => Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceEntry))).
+                Select(sourceEntry => pathHelper.GetFullPathWithoutEndingDirectorySeparator(sourceEntry)).
                 Select(sourcePath => new
                 {
                     SourcePath = sourcePath,

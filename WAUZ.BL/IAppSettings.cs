@@ -1,6 +1,6 @@
 ﻿namespace WAUZ.BL
 {
-    public interface ISettingsHelper
+    public interface IAppSettings
     {
         IDictionary<string, string> Settings { get; }
 

@@ -14,7 +14,11 @@ namespace WAUZ
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             var pathHelper = new PathHelper();
-            Application.Run(new MainForm(new BusinessLogic(new SettingsHelper(pathHelper), new ZipHelper(new FileSystemHelper(pathHelper)))));
+            var appSettings = new AppSettings(pathHelper);
+            var fileSystemHelper = new FileSystemHelper(pathHelper);
+            var zipHelper = new ZipHelper(pathHelper, fileSystemHelper);
+            var businessLogic = new BusinessLogic(appSettings, pathHelper, zipHelper);
+            Application.Run(new MainForm(businessLogic, pathHelper));
         }
     }
 }

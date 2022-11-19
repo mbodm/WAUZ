@@ -5,10 +5,12 @@ namespace WAUZ
     public partial class MainForm : Form
     {
         private readonly IBusinessLogic businessLogic;
+        private readonly IPathHelper pathHelper;
 
-        public MainForm(IBusinessLogic businessLogic)
+        public MainForm(IBusinessLogic businessLogic, IPathHelper pathHelper)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
 
             InitializeComponent();
 
@@ -17,9 +19,39 @@ namespace WAUZ
             textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Normally some temporary download folder.";
             textBoxDest.PlaceholderText = "The folder to unzip the addons into. Normally the World of Warcraft AddOns folder.";
         }
-        
+
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            businessLogic.LoadSettings();
+
+            textBoxSource.Text = businessLogic.SourceFolder;
+            textBoxDest.Text = businessLogic.DestFolder;
+        }
+
+        private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            businessLogic.SourceFolder = textBoxSource.Text;
+            businessLogic.DestFolder = textBoxDest.Text;
+
+            businessLogic.SaveSettings();
+        }
+
         private void ButtonSource_Click(object sender, EventArgs e)
         {
+            // todo: das hier richtig machen
+            // überlegung: überall in der app directoryexists und fileexists gegen pathisfileandexists() pathhelper zeugs austauschen?
+
+            var initialDirectory = textBoxSource.Text;
+
+            if (Directory.Exists(initialDirectory))
+            {
+                SelectFolder(textBoxDest, initialDirectory);
+            }
+            else
+            {
+                SelectFolder(textBoxDest);
+            }
+
             SelectFolder(textBoxSource);
         }
 
@@ -39,8 +71,8 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            businessLogic.SourceFolder = Path.TrimEndingDirectorySeparator(textBoxSource.Text.Trim());
-            businessLogic.DestFolder = Path.TrimEndingDirectorySeparator(textBoxDest.Text.Trim());
+            businessLogic.SourceFolder = textBoxSource.Text;
+            businessLogic.DestFolder = textBoxDest.Text;
 
             progressBar.Maximum = Directory.GetFiles(businessLogic.SourceFolder, "*.zip", SearchOption.TopDirectoryOnly).Length;
             progressBar.Value = progressBar.Minimum;
@@ -54,7 +86,7 @@ namespace WAUZ
             labelProgressBar.Text = "Progress: All addons successfully unzipped.";
         }
 
-        private static void SelectFolder(TextBox textBox, string initialDirectory = "")
+        private void SelectFolder(TextBox textBox, string initialDirectory = "")
         {
             if (string.IsNullOrWhiteSpace(initialDirectory) || !Directory.Exists(initialDirectory))
             {
@@ -71,30 +103,12 @@ namespace WAUZ
                 return;
             }
 
-            textBox.Text = Path.TrimEndingDirectorySeparator(dialog.SelectedPath);
+            textBox.Text = pathHelper.GetFullPathWithoutEndingDirectorySeparator(dialog.SelectedPath);
         }
 
         private static void ShowError(string errorText)
         {
             MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-
-        // Todo: Im Auswahl-Dialog, wenn vorhanden, gleich das AddOns Folder anzeigen.
-        // Nein, das gehört nicht in die BusinessLogic (weil sonst leere Settings immer am Ende das drin haben).
-
-        //private static string GetDefaultDestFolder()
-        //{
-        //    var wowAddonsDefaultFolder = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
-
-        //    if (Directory.Exists(wowAddonsDefaultFolder))
-        //    {
-        //        // Just returning the string itself, is also possible, of course. But it felt better to me,
-        //        // when the string flows through the Path methods, cause of the "Program Files (x86)" part.
-
-        //        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(wowAddonsDefaultFolder));
-        //    }
-
-        //    return string.Empty;
-        //}
     }
 }

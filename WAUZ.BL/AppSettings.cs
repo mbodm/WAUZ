@@ -3,13 +3,13 @@ using System.Xml.Linq;
 
 namespace WAUZ.BL
 {
-    public sealed class SettingsHelper : ISettingsHelper
+    public sealed class AppSettings : IAppSettings
     {
         private readonly string xmlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AppDataMBODM", "WAUZ.xml");
 
         private readonly IPathHelper pathHelper;
 
-        public SettingsHelper(IPathHelper pathHelper)
+        public AppSettings(IPathHelper pathHelper)
         {
             this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
         }

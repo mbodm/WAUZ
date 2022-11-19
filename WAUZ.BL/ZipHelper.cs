@@ -4,10 +4,12 @@ namespace WAUZ.BL
 {
     public sealed class ZipHelper : IZipHelper
     {
+        private readonly IPathHelper pathHelper;
         private readonly IFileSystemHelper fileSystemHelper;
 
-        public ZipHelper(IFileSystemHelper fileSystemHelper)
+        public ZipHelper(IPathHelper pathHelper, IFileSystemHelper fileSystemHelper)
         {
+            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
             this.fileSystemHelper = fileSystemHelper ?? throw new ArgumentNullException(nameof(fileSystemHelper));
         }
 
@@ -27,8 +29,8 @@ namespace WAUZ.BL
 
             // Rely on full paths only, with trailing slash/backslash trimmed.
 
-            zipFile = Path.TrimEndingDirectorySeparator(Path.GetFullPath(zipFile.Trim()));
-            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder.Trim()));
+            zipFile = pathHelper.GetFullPathWithoutEndingDirectorySeparator(zipFile);
+            destFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(destFolder);
 
             // Early-stage validation, if zip file exists (despite the fact
             // that decompression method below would fail gracefully anyway).

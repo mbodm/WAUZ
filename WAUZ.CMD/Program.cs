@@ -71,7 +71,9 @@ sourceFolderEntries.ToList().ForEach(e => Console.WriteLine(Path.GetFileName(e) 
 //var fileNames = Directory.GetFiles(testDir).Select(f => Path.GetFileName(f));
 //foreach (var f in fileNames) Console.WriteLine(f);
 var pathHelper = new PathHelper();
-var businessLogic = new BusinessLogic(new SettingsHelper(pathHelper), new ZipHelper(new FileSystemHelper(pathHelper)));
+var appSettings = new AppSettings(pathHelper);
+var zipHelper = new ZipHelper(pathHelper, new FileSystemHelper(pathHelper));
+var businessLogic = new BusinessLogic(appSettings, pathHelper, zipHelper);
 businessLogic.LoadSettings();
 Console.WriteLine($"SourceFolder: {businessLogic.SourceFolder}");
 Console.WriteLine($"DestFolder: {businessLogic.DestFolder}");

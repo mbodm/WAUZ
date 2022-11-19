@@ -7,5 +7,6 @@
         bool PathExistsAndIsDirectory(string path);
         string GetParentDirectoryFromPath(string path);
         string GetFileOrDirectoryNameFromPath(string path);
+        string GetFullPathWithoutEndingDirectorySeparator(string path);
     }
 }

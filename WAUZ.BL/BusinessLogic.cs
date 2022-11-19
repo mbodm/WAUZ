@@ -2,12 +2,14 @@
 {
     public sealed class BusinessLogic : IBusinessLogic
     {
-        private readonly ISettingsHelper settingsHelper;
+        private readonly IAppSettings appSettings;
+        private readonly IPathHelper pathHelper;
         private readonly IZipHelper zipHelper;
 
-        public BusinessLogic(ISettingsHelper settingsHelper, IZipHelper zipHelper)
+        public BusinessLogic(IAppSettings appSettings, IPathHelper pathHelper, IZipHelper zipHelper)
         {
-            this.settingsHelper = settingsHelper ?? throw new ArgumentNullException(nameof(settingsHelper));
+            this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
             this.zipHelper = zipHelper ?? throw new ArgumentNullException(nameof(zipHelper));
         }
 
@@ -18,7 +20,7 @@
         {
             try
             {
-                settingsHelper.Load();
+                appSettings.Load();
             }
             catch (Exception e)
             {
@@ -27,29 +29,30 @@
                 throw new InvalidOperationException("An error occurred while loading the settings (see log file for details).");
             }
 
-            // It is possible to use the null-forgiving operator ("!") here, or declare the out variable as nullable, like mentioned in this post:
-            // https://stackoverflow.com/questions/58681729/net-non-nullable-reference-type-and-out-parameters
+            if (appSettings.Settings.TryGetValue(nameof(SourceFolder), out var sourceFolder))
+            {
+                SourceFolder = sourceFolder;
+            }
 
-            SourceFolder = settingsHelper.Settings.TryGetValue(nameof(SourceFolder), out string? sourceFolder) ? sourceFolder : string.Empty;
-            DestFolder = settingsHelper.Settings.TryGetValue(nameof(DestFolder), out string? destFolder) ? destFolder : string.Empty;
+            if (appSettings.Settings.TryGetValue(nameof(DestFolder), out var destFolder))
+            {
+                DestFolder = destFolder;
+            }
         }
 
         public void SaveSettings()
         {
-            settingsHelper.Settings[nameof(SourceFolder)] = SourceFolder;
-            settingsHelper.Settings[nameof(DestFolder)] = DestFolder;
+            appSettings.Settings[nameof(SourceFolder)] = SourceFolder;
+            appSettings.Settings[nameof(DestFolder)] = DestFolder;
 
-            settingsHelper.Save();
+            appSettings.Save();
         }
-
-        // Todo: Wann mach "fullpath und trimending von SourceFolder und DestFolder ?
-        // - Beim zuweisen ?
-        // - Im Unzip ?
-        // - Darauf verlassen dass es korrekt von aussen kommt ?
-        // - Soll es zurückgeschrieben werden und im SettingsFile landen oder nur genutzt werden ?
 
         public async Task Unzip(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
+            SourceFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(SourceFolder);
+            DestFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(DestFolder);
+
             Validate();
 
             var tasks = GetZipFiles().Select(zipFile => Task.Run(() =>
@@ -98,12 +101,14 @@
 
             if (SourceFolder.Length > maxPathLength)
             {
-                throw new InvalidOperationException("Source folder path is too long. Make sure given path is smaller than 200 characters.");
+                throw new InvalidOperationException("Absolute source folder path is too long." +
+                    "Make sure the absolute path for given path is smaller than 200 characters.");
             }
 
             if (DestFolder.Length > maxPathLength)
             {
-                throw new InvalidOperationException("Destination folder path is too long. Make sure given path is smaller than 200 characters.");
+                throw new InvalidOperationException("Absolute destination folder path is too long." +
+                    "Make sure the absoulte path for given path is smaller than 200 characters.");
             }
 
             if (!GetZipFiles().Any())
