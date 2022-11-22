@@ -27,10 +27,17 @@ namespace WAUZ.BL
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
 
+            if (pathHelper.)
+
+
+
+
+
+
             // Rely on full paths only, with trailing slash/backslash trimmed.
 
-            zipFile = pathHelper.GetFullPathWithoutEndingDirectorySeparator(zipFile);
-            destFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(destFolder);
+            zipFile = pathHelper.GetAbsolutePathWithoutEndingDirectorySeparator(zipFile);
+            destFolder = pathHelper.GetAbsolutePathWithoutEndingDirectorySeparator(destFolder);
 
             // Early-stage validation, if zip file exists (despite the fact
             // that decompression method below would fail gracefully anyway).

@@ -7,6 +7,8 @@ namespace WAUZ
         private readonly IBusinessLogic businessLogic;
         private readonly IPathHelper pathHelper;
 
+        private CancellationToken unzipCancellationToken = CancellationToken.None;
+
         public MainForm(IBusinessLogic businessLogic, IPathHelper pathHelper)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
@@ -38,72 +40,95 @@ namespace WAUZ
 
         private void ButtonSource_Click(object sender, EventArgs e)
         {
-            // todo: das hier richtig machen
-            // überlegung: überall in der app directoryexists und fileexists gegen pathisfileandexists() pathhelper zeugs austauschen?
-
-            var initialDirectory = textBoxSource.Text;
-
-            if (Directory.Exists(initialDirectory))
+            if (Directory.Exists(textBoxSource.Text))
             {
-                SelectFolder(textBoxDest, initialDirectory);
+                SelectFolder(textBoxSource, textBoxSource.Text);
             }
             else
             {
-                SelectFolder(textBoxDest);
+                SelectFolder(textBoxSource, GetDesktopFolder());
             }
-
-            SelectFolder(textBoxSource);
         }
 
         private void ButtonDest_Click(object sender, EventArgs e)
         {
-            var initialDirectory = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
-
-            if (Directory.Exists(initialDirectory))
+            if (Directory.Exists(textBoxDest.Text))
             {
-                SelectFolder(textBoxDest, initialDirectory);
+                SelectFolder(textBoxDest, textBoxDest.Text);
             }
             else
             {
-                SelectFolder(textBoxDest);
+                var wowAddonsDefaultFolder = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
+
+                if (Directory.Exists(wowAddonsDefaultFolder))
+                {
+                    SelectFolder(textBoxDest, wowAddonsDefaultFolder);
+                }
+                else
+                {
+                    SelectFolder(textBoxDest, GetDesktopFolder());
+                }
             }
         }
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            businessLogic.SourceFolder = textBoxSource.Text;
-            businessLogic.DestFolder = textBoxDest.Text;
-
-            progressBar.Maximum = Directory.GetFiles(businessLogic.SourceFolder, "*.zip", SearchOption.TopDirectoryOnly).Length;
-            progressBar.Value = progressBar.Minimum;
-
-            await businessLogic.Unzip(new Progress<ProgressData>(_ =>
+            if (unzipCancellationToken == CancellationToken.None)
             {
-                progressBar.Value++;
-                labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
-            }));
+                businessLogic.SourceFolder = textBoxSource.Text;
+                businessLogic.DestFolder = textBoxDest.Text;
 
-            labelProgressBar.Text = "Progress: All addons successfully unzipped.";
+                try
+                {
+                    businessLogic.ValidateSettings();
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex.Message);
+
+                    return;
+                }
+
+                progressBar.Maximum = businessLogic.GetSourceFolderZipFiles().Count();
+                progressBar.Value = progressBar.Minimum;
+
+                try
+                {
+                    await businessLogic.Unzip(new Progress<ProgressData>(_ =>
+                    {
+                        progressBar.Value++;
+                        labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
+                    }));
+                }
+                catch (Exception ex)
+                {
+                    ShowError(ex.Message);
+                }
+
+                labelProgressBar.Text = "Progress: All addons successfully unzipped.";
+            }
+            else
+            {
+                // Todo: Cancel operation
+            }
         }
 
-        private void SelectFolder(TextBox textBox, string initialDirectory = "")
+        private void SelectFolder(TextBox textBox, string startFolder)
         {
-            if (string.IsNullOrWhiteSpace(initialDirectory) || !Directory.Exists(initialDirectory))
-            {
-                initialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            }
-
             using var dialog = new FolderBrowserDialog
             { 
-                InitialDirectory = initialDirectory
+                InitialDirectory = startFolder
             };
 
-            if (dialog.ShowDialog() == DialogResult.Cancel)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                return;
+                textBox.Text = pathHelper.TrimEndingDirectorySeparatorChar(dialog.SelectedPath);
             }
+        }
 
-            textBox.Text = pathHelper.GetFullPathWithoutEndingDirectorySeparator(dialog.SelectedPath);
+        private static string GetDesktopFolder()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
         private static void ShowError(string errorText)

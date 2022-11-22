@@ -1,82 +1,29 @@
-﻿using System.Diagnostics;
-using WAUZ.BL;
+﻿// Get a list of invalid path characters.
+char[] invalidPathChars = Path.GetInvalidPathChars();
 
-Console.WriteLine("Hello, World!");
-//var dir = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
-//if (Directory.Exists(dir))
-//{
-//    Console.WriteLine("passt");
-//}
-//dir = Path.GetFullPath(dir);
-//var folders = Directory.GetDirectories(dir);
-//var counter = 0;
-//foreach (var folder in folders)
-//{
-//    var fullPath = Path.GetFullPath(folder);
-//    Console.WriteLine(fullPath);
-//    counter++;
-//}
-//Console.WriteLine(counter);
+Console.WriteLine("The following characters are invalid in a path:");
+ShowChars(invalidPathChars);
+Console.WriteLine();
 
+// Get a list of invalid file characters.
+char[] invalidFileChars = Path.GetInvalidFileNameChars();
 
+Console.WriteLine("The following characters are invalid in a filename:");
+ShowChars(invalidFileChars);
 
-var testDir = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns\WeakAurasTemplates";
-
-if (Directory.Exists(testDir))
+static void ShowChars(char[] charArray)
 {
-    Console.WriteLine("Dir exists.");
+    Console.WriteLine("Char\tHex Value");
+    // Display each invalid character to the console.
+    foreach (char someChar in charArray)
+    {
+        if (Char.IsWhiteSpace(someChar))
+        {
+            Console.WriteLine(",\t{0:X4}", (int)someChar);
+        }
+        else
+        {
+            Console.WriteLine("{0:c},\t{1:X4}", someChar, (int)someChar);
+        }
+    }
 }
-
-var sourceFolderEntries = Directory.EnumerateFileSystemEntries(testDir).Select(entry => Path.GetFileName(entry) ?? string.Empty);
-
-sourceFolderEntries.ToList().ForEach(e => Console.WriteLine(Path.GetFileName(e) ?? "wuuuuz"));
-
-//Console.WriteLine("Files--------------------");
-//ListFiles(testDir);
-
-//Console.WriteLine("Folders--------------------");
-//ListFolders(testDir);
-
-//static void ListFiles(string folder)
-//{
-//    var entries = Directory.GetFileSystemEntries(folder);
-//    //var files = Directory.GetFiles(folder, "*", SearchOption.TopDirectoryOnly);
-
-//    foreach (var entry in entries)
-//    {
-//        if (entry != string.Empty)
-//        {
-//            Console.WriteLine(entry);
-//        }
-//    }
-//}
-
-//static void ListFolders(string folder)
-//{
-//    var folders = Directory.GetDirectories(folder);
-
-//    foreach (var f in folders)
-//    {
-//        if (f != string.Empty)
-//        {
-//            Console.WriteLine(f);
-//        }
-//    }
-//}
-
-//Console.WriteLine("Folders:");
-//var folderNames = Directory.GetDirectories(testDir).Select(f => Path.GetFileName(f));
-//foreach (var f in folderNames) Console.WriteLine(f);
-//Console.WriteLine("Files:");
-//var fileNames = Directory.GetFiles(testDir).Select(f => Path.GetFileName(f));
-//foreach (var f in fileNames) Console.WriteLine(f);
-var pathHelper = new PathHelper();
-var appSettings = new AppSettings(pathHelper);
-var zipHelper = new ZipHelper(pathHelper, new FileSystemHelper(pathHelper));
-var businessLogic = new BusinessLogic(appSettings, pathHelper, zipHelper);
-businessLogic.LoadSettings();
-Console.WriteLine($"SourceFolder: {businessLogic.SourceFolder}");
-Console.WriteLine($"DestFolder: {businessLogic.DestFolder}");
-businessLogic.SourceFolder = string.Empty;
-businessLogic.DestFolder = string.Empty;
-businessLogic.SaveSettings();

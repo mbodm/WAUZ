@@ -1,10 +1,14 @@
 ﻿namespace WAUZ.BL
 {
+    // todo: überlegung: überall in der app directoryexists und fileexists gegen pathisfileandexists() pathhelper zeugs austauschen?
+
     public sealed class BusinessLogic : IBusinessLogic
     {
         private readonly IAppSettings appSettings;
         private readonly IPathHelper pathHelper;
         private readonly IZipHelper zipHelper;
+
+        private bool settingsValidated = false;
 
         public BusinessLogic(IAppSettings appSettings, IPathHelper pathHelper, IZipHelper zipHelper)
         {
@@ -48,14 +52,41 @@
             appSettings.Save();
         }
 
+        public void ValidateSettings()
+        {
+            ValidateFolder(SourceFolder, "Source folder");
+            
+            if (!GetSourceFolderZipFiles().Any())
+            {
+                throw new InvalidOperationException("Source folder not contains any zip files.");
+            }
+
+            ValidateFolder(DestFolder, "Destination folder");
+
+            settingsValidated = true;
+        }
+
+        public IEnumerable<string> GetSourceFolderZipFiles()
+        {
+            if (!settingsValidated)
+            {
+                throw new InvalidOperationException("Validate settings first, before accessing files or folders.");
+            }
+
+            return Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
+        }
+
         public async Task Unzip(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
-            SourceFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(SourceFolder);
-            DestFolder = pathHelper.GetFullPathWithoutEndingDirectorySeparator(DestFolder);
+            if (!settingsValidated)
+            {
+                throw new InvalidOperationException("Validate settings first, before starting the unzip operation.");
+            }
 
-            Validate();
-
-            var tasks = GetZipFiles().Select(zipFile => Task.Run(() =>
+            SourceFolder = pathHelper.TrimEndingDirectorySeparatorChar(SourceFolder);
+            DestFolder = pathHelper.TrimEndingDirectorySeparatorChar(DestFolder);
+            
+            var tasks = GetSourceFolderZipFiles().Select(zipFile => Task.Run(() =>
             {
                 zipHelper.UnzipFile(zipFile, DestFolder);
 
@@ -75,51 +106,33 @@
             // Todo: Create and use logger.
         }
 
-        private void Validate()
+        private void ValidateFolder(string folderValue, string folderName)
         {
-            if (string.IsNullOrWhiteSpace(SourceFolder))
+            if (string.IsNullOrWhiteSpace(folderValue))
             {
-                throw new InvalidOperationException("Source folder missing.");
+                throw new InvalidOperationException($"{folderName} missing.");
             }
 
-            if (!Directory.Exists(SourceFolder))
-            {
-                throw new InvalidOperationException("Source folder not exists.");
+            if (!pathHelper.IsValidAbsolutePathToExistingDirectory(SourceFolder))
+            { 
+                throw new InvalidOperationException($"{folderName} is not a valid path." +
+                    "Only a valid absolute path to an existing directory is supported.");
             }
 
-            if (string.IsNullOrWhiteSpace(DestFolder))
+            // It is possible to foresee the maximum length of a source path, for every zip file.
+            // But it is not really possible to foresee the maximum length of a destination path,
+            // after all of the zip file contents (files and subfolders) are also included there.
+            // Therefore, as a "rule of thumb", the half of the maximum path length is used here.
+            // It seems totally fine to me, to let the unzip operation fail gracefully (throwing
+            // an exception), if in some special case a complete path exceeds the maximum length.
+
+            var maxLength = 260 / 2;
+
+            if (folderValue.Length > maxLength)
             {
-                throw new InvalidOperationException("Destination folder missing.");
+                throw new InvalidOperationException($"{folderName} path is too long." +
+                    $"Make sure the given path is smaller than {maxLength} characters.");
             }
-
-            if (!Directory.Exists(DestFolder))
-            {
-                throw new InvalidOperationException("Destination folder not exists.");
-            }
-
-            var maxPathLength = 200;
-
-            if (SourceFolder.Length > maxPathLength)
-            {
-                throw new InvalidOperationException("Absolute source folder path is too long." +
-                    "Make sure the absolute path for given path is smaller than 200 characters.");
-            }
-
-            if (DestFolder.Length > maxPathLength)
-            {
-                throw new InvalidOperationException("Absolute destination folder path is too long." +
-                    "Make sure the absoulte path for given path is smaller than 200 characters.");
-            }
-
-            if (!GetZipFiles().Any())
-            {
-                throw new InvalidOperationException("Source folder not contains any zip files.");
-            }
-        }
-
-        private IEnumerable<string> GetZipFiles()
-        {
-            return Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
         }
     }
 }
