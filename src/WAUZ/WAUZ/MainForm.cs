@@ -89,7 +89,7 @@ namespace WAUZ
                     return;
                 }
 
-                progressBar.Maximum = businessLogic.GetSourceFolderZipFiles().Count();
+                progressBar.Maximum = businessLogic.GetZipFiles().Count();
                 progressBar.Value = progressBar.Minimum;
 
                 try

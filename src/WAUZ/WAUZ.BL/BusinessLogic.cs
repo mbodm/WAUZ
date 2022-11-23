@@ -1,7 +1,5 @@
 ﻿namespace WAUZ.BL
 {
-    // todo: überlegung: überall in der app directoryexists und fileexists gegen pathisfileandexists() pathhelper zeugs austauschen?
-
     public sealed class BusinessLogic : IBusinessLogic
     {
         private readonly IAppSettings appSettings;
@@ -56,7 +54,7 @@
         {
             ValidateFolder(SourceFolder, "Source folder");
             
-            if (!GetSourceFolderZipFiles().Any())
+            if (!GetZipFiles().Any())
             {
                 throw new InvalidOperationException("Source folder not contains any zip files.");
             }
@@ -66,11 +64,11 @@
             settingsValidated = true;
         }
 
-        public IEnumerable<string> GetSourceFolderZipFiles()
+        public IEnumerable<string> GetZipFiles()
         {
             if (!settingsValidated)
             {
-                throw new InvalidOperationException("Validate settings first, before accessing files or folders.");
+                throw new InvalidOperationException("Validate settings first, before accessing the zip files.");
             }
 
             return Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
@@ -83,10 +81,10 @@
                 throw new InvalidOperationException("Validate settings first, before starting the unzip operation.");
             }
 
-            SourceFolder = pathHelper.TrimEndingDirectorySeparatorChar(SourceFolder);
-            DestFolder = pathHelper.TrimEndingDirectorySeparatorChar(DestFolder);
+            SourceFolder = Path.TrimEndingDirectorySeparator(SourceFolder);
+            DestFolder = Path.TrimEndingDirectorySeparator(DestFolder);
             
-            var tasks = GetSourceFolderZipFiles().Select(zipFile => Task.Run(() =>
+            var tasks = GetZipFiles().Select(zipFile => Task.Run(() =>
             {
                 zipHelper.UnzipFile(zipFile, DestFolder);
 

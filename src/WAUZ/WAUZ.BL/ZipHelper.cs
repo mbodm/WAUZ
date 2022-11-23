@@ -27,32 +27,28 @@ namespace WAUZ.BL
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
 
-            if (pathHelper.)
+            // Rely on valid, absolute and existing paths only.
 
-
-
-
-
-
-            // Rely on full paths only, with trailing slash/backslash trimmed.
-
-            zipFile = pathHelper.GetAbsolutePathWithoutEndingDirectorySeparator(zipFile);
-            destFolder = pathHelper.GetAbsolutePathWithoutEndingDirectorySeparator(destFolder);
-
-            // Early-stage validation, if zip file exists (despite the fact
-            // that decompression method below would fail gracefully anyway).
-
-            if (!File.Exists(zipFile))
+            if (!pathHelper.IsValidAbsolutePathToExistingFile(zipFile))
             {
-                throw new InvalidOperationException("Given zip file not exists.");
+                throw new InvalidOperationException($"The '{zipFile}' argument must be a valid absolute path to an existing file.");
             }
 
-            // Create destination folder, if it not already exists.
-
-            if (!Directory.Exists(destFolder))
+            if (!pathHelper.IsValidAbsolutePathToExistingDirectory(destFolder))
             {
-                Directory.CreateDirectory(destFolder);
+                throw new InvalidOperationException($"The '{destFolder}' argument must be a valid absolute path to an existing directory.");
             }
+
+            // Rely only on file name with proper file extension.
+
+            if (zipFile[^3..^0] != ".zip")
+            {
+                throw new InvalidOperationException($"The '{zipFile}' argument must be a file name ending with the '.zip' file extension.");
+            }
+
+            // Rely only on folder with trailing slash/backslash trimmed (if existing).
+
+            destFolder = Path.TrimEndingDirectorySeparator(destFolder);
 
             // Create temp folder, with random name.
 
@@ -71,7 +67,10 @@ namespace WAUZ.BL
 
             // Delete temp folder, after the content of temp folder was moved.
 
-            Directory.Delete(tempFolder);
+            if (Directory.Exists(tempFolder))
+            {
+                Directory.Delete(tempFolder, true);
+            }
         }
 
         private static string CreateTempFolder()

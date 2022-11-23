@@ -35,7 +35,7 @@ namespace WAUZ.BL
 
         public void Save()
         {
-            var folder = pathHelper.GetParentDirectoryFromPath(xmlFile);
+            var folder = pathHelper.GetParentDirectoryFromValidAbsolutePath(xmlFile);
 
             if (folder == string.Empty)
             {
