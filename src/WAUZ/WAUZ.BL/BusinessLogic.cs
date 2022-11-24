@@ -6,8 +6,6 @@
         private readonly IPathHelper pathHelper;
         private readonly IZipHelper zipHelper;
 
-        private bool settingsValidated = false;
-
         public BusinessLogic(IAppSettings appSettings, IPathHelper pathHelper, IZipHelper zipHelper)
         {
             this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
@@ -31,12 +29,12 @@
                 throw new InvalidOperationException("An error occurred while loading the settings (see log file for details).");
             }
 
-            if (appSettings.Settings.TryGetValue(nameof(SourceFolder), out var sourceFolder))
+            if (appSettings.Settings.TryGetValue("source", out var sourceFolder))
             {
                 SourceFolder = sourceFolder;
             }
 
-            if (appSettings.Settings.TryGetValue(nameof(DestFolder), out var destFolder))
+            if (appSettings.Settings.TryGetValue("dest", out var destFolder))
             {
                 DestFolder = destFolder;
             }
@@ -44,47 +42,36 @@
 
         public void SaveSettings()
         {
-            appSettings.Settings[nameof(SourceFolder)] = SourceFolder;
-            appSettings.Settings[nameof(DestFolder)] = DestFolder;
+            appSettings.Settings["source"] = SourceFolder;
+            appSettings.Settings["dest"] = DestFolder;
 
             appSettings.Save();
         }
 
-        public void ValidateSettings()
-        {
-            ValidateFolder(SourceFolder, "Source folder");
-            
-            if (!GetZipFiles().Any())
-            {
-                throw new InvalidOperationException("Source folder not contains any zip files.");
-            }
-
-            ValidateFolder(DestFolder, "Destination folder");
-
-            settingsValidated = true;
-        }
-
         public IEnumerable<string> GetZipFiles()
         {
-            if (!settingsValidated)
+            ValidateFolder(SourceFolder, "Source-Folder");
+
+            var zipFiles = Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
+
+            if (!zipFiles.Any())
             {
-                throw new InvalidOperationException("Validate settings first, before accessing the zip files.");
+                throw new InvalidOperationException("Source-Folder not contains any zip files.");
             }
 
-            return Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
+            return zipFiles;
         }
 
         public async Task Unzip(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
-            if (!settingsValidated)
-            {
-                throw new InvalidOperationException("Validate settings first, before starting the unzip operation.");
-            }
+            var zipFiles = GetZipFiles();
+
+            ValidateFolder(DestFolder, "Destination-Folder");
 
             SourceFolder = Path.TrimEndingDirectorySeparator(SourceFolder);
             DestFolder = Path.TrimEndingDirectorySeparator(DestFolder);
-            
-            var tasks = GetZipFiles().Select(zipFile => Task.Run(() =>
+
+            var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
                 zipHelper.UnzipFile(zipFile, DestFolder);
 
@@ -95,7 +82,7 @@
                 });
             },
             cancellationToken));
-
+            
             await Task.WhenAll(tasks);
         }
 
@@ -112,9 +99,9 @@
             }
 
             if (!pathHelper.IsValidAbsolutePathToExistingDirectory(SourceFolder))
-            { 
-                throw new InvalidOperationException($"{folderName} is not a valid path." +
-                    "Only a valid absolute path to an existing directory is supported.");
+            {
+                throw new InvalidOperationException($"{folderName} is not a valid path. " +
+                    "Given path must be a valid, absolute path, to an existing directory.");
             }
 
             // It is possible to foresee the maximum length of a source path, for every zip file.
@@ -128,8 +115,8 @@
 
             if (folderValue.Length > maxLength)
             {
-                throw new InvalidOperationException($"{folderName} path is too long." +
-                    $"Make sure the given path is smaller than {maxLength} characters.");
+                throw new InvalidOperationException($"{folderName} path is too long. " +
+                    $"Make sure given path is smaller than {maxLength} characters.");
             }
         }
     }

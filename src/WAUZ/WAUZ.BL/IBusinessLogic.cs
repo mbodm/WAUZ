@@ -7,7 +7,7 @@
 
         void LoadSettings();
         void SaveSettings();
-        void ValidateSettings();
+
         IEnumerable<string> GetZipFiles();
         Task Unzip(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
     }

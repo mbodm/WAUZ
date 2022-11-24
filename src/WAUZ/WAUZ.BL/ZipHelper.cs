@@ -31,19 +31,19 @@ namespace WAUZ.BL
 
             if (!pathHelper.IsValidAbsolutePathToExistingFile(zipFile))
             {
-                throw new InvalidOperationException($"The '{zipFile}' argument must be a valid absolute path to an existing file.");
+                throw new InvalidOperationException($"The '{nameof(zipFile)}' argument must be a valid, absolute path, to an existing file.");
             }
 
             if (!pathHelper.IsValidAbsolutePathToExistingDirectory(destFolder))
             {
-                throw new InvalidOperationException($"The '{destFolder}' argument must be a valid absolute path to an existing directory.");
+                throw new InvalidOperationException($"The '{nameof(destFolder)}' argument must be a valid, absolute path, to an existing directory.");
             }
 
             // Rely only on file name with proper file extension.
 
-            if (zipFile[^3..^0] != ".zip")
+            if (zipFile[^4..^0] != ".zip")
             {
-                throw new InvalidOperationException($"The '{zipFile}' argument must be a file name ending with the '.zip' file extension.");
+                throw new InvalidOperationException($"The '{nameof(zipFile)}' argument must be a file, ending with the '.zip' file extension.");
             }
 
             // Rely only on folder with trailing slash/backslash trimmed (if existing).

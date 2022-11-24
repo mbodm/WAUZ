@@ -27,12 +27,12 @@
 
             if (!pathHelper.IsValidAbsolutePathToExistingDirectory(sourceFolder))
             {
-                throw new InvalidOperationException($"The '{sourceFolder}' argument must be a valid absolute path to an existing directory.");
+                throw new InvalidOperationException($"The '{nameof(sourceFolder)}' argument must be a valid, absolute path, to an existing directory.");
             }
 
             if (!pathHelper.IsValidAbsolutePathToExistingDirectory(destFolder))
             {
-                throw new InvalidOperationException($"The '{destFolder}' argument must be a valid absolute path to an existing directory.");
+                throw new InvalidOperationException($"The '{nameof(destFolder)}' argument must be a valid, absolute path, to an existing directory.");
             }
 
             // Rely only on folders with trailing slash/backslash trimmed (if existing).

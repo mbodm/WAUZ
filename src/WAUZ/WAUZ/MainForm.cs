@@ -7,7 +7,8 @@ namespace WAUZ
         private readonly IBusinessLogic businessLogic;
         private readonly IPathHelper pathHelper;
 
-        private CancellationToken unzipCancellationToken = CancellationToken.None;
+        private CancellationTokenSource cancellationTokenSource = new(1000 * 30);
+        private SemaphoreSlim semaphoreSlim = new(0, 1);
 
         public MainForm(IBusinessLogic businessLogic, IPathHelper pathHelper)
         {
@@ -73,56 +74,75 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            if (unzipCancellationToken == CancellationToken.None)
+            var normalText = "&Unzip";
+            var cancelText = "&Cancel";
+
+            if (buttonUnzip.Text == normalText)
             {
-                businessLogic.SourceFolder = textBoxSource.Text;
-                businessLogic.DestFolder = textBoxDest.Text;
+                buttonUnzip.Text = cancelText;
+
+                cancellationTokenSource = new();
 
                 try
                 {
-                    businessLogic.ValidateSettings();
-                }
-                catch (Exception ex)
-                {
-                    ShowError(ex.Message);
+                    businessLogic.SourceFolder = textBoxSource.Text;
+                    businessLogic.DestFolder = textBoxDest.Text;
 
-                    return;
-                }
+                    progressBar.Maximum = businessLogic.GetZipFiles().Count();
+                    progressBar.Value = progressBar.Minimum;
 
-                progressBar.Maximum = businessLogic.GetZipFiles().Count();
-                progressBar.Value = progressBar.Minimum;
-
-                try
-                {
                     await businessLogic.Unzip(new Progress<ProgressData>(_ =>
                     {
                         progressBar.Value++;
                         labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
-                    }));
+
+                        if (progressBar.Value == progressBar.Maximum)
+                        {
+                            semaphoreSlim.Release();
+                        }
+                    }),
+                    cancellationTokenSource.Token);
+
+                    await semaphoreSlim.WaitAsync();
+
+                    labelProgressBar.Text = "Progress: All addons successfully unzipped.";
                 }
-                catch (Exception ex)
+                catch (InvalidOperationException ioex)
                 {
-                    ShowError(ex.Message);
+                    ShowError(ioex.Message);
+                }
+                catch (OperationCanceledException)
+                {
+                    ShowError("WOOFFI Canceled");
                 }
 
-                labelProgressBar.Text = "Progress: All addons successfully unzipped.";
+                return;
             }
-            else
+
+            if (buttonUnzip.Text == cancelText)
             {
-                // Todo: Cancel operation
+                buttonUnzip.Text = normalText;
+
+                cancellationTokenSource.Cancel();
+
+                return;
             }
+
+            return;
+
+      
         }
 
-        private void SelectFolder(TextBox textBox, string startFolder)
+        private static void SelectFolder(TextBox textBox, string startFolder)
         {
             using var dialog = new FolderBrowserDialog
-            { 
+            {
                 InitialDirectory = startFolder
             };
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                textBox.Text = pathHelper.TrimEndingDirectorySeparatorChar(dialog.SelectedPath);
+                textBox.Text = Path.TrimEndingDirectorySeparator(dialog.SelectedPath);
             }
         }
 
