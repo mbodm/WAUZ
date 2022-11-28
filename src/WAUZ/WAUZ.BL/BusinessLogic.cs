@@ -47,7 +47,16 @@
             appSettings.Settings["source"] = SourceFolder;
             appSettings.Settings["dest"] = DestFolder;
 
-            appSettings.Save();
+            try
+            {
+                appSettings.Save();
+            }
+            catch (Exception e)
+            {
+                appLogging.Log(e);
+
+                throw new InvalidOperationException("An error occurred while saving the settings (see log file for details).");
+            }
         }
 
         public IEnumerable<string> GetZipFiles()

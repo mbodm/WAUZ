@@ -9,6 +9,11 @@ namespace WAUZ.BL
 
         public void Log(string message)
         {
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException($"'{nameof(message)}' cannot be null or whitespace.", nameof(message));
+            }
+
             lock (syncRoot)
             {
                 WriteLogEntry(message);
@@ -17,6 +22,11 @@ namespace WAUZ.BL
 
         public void Log(Exception exception)
         {
+            if (exception is null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
             lock (syncRoot)
             {
                 WriteLogEntry(
