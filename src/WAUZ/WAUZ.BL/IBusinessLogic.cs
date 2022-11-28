@@ -9,6 +9,6 @@
         void SaveSettings();
 
         IEnumerable<string> GetZipFiles();
-        Task Unzip(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
+        Task UnzipAsync(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
     }
 }

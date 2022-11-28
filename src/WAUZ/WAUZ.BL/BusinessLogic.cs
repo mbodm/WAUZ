@@ -3,12 +3,14 @@
     public sealed class BusinessLogic : IBusinessLogic
     {
         private readonly IAppSettings appSettings;
+        private readonly IAppLogging appLogging;
         private readonly IPathHelper pathHelper;
         private readonly IZipHelper zipHelper;
 
-        public BusinessLogic(IAppSettings appSettings, IPathHelper pathHelper, IZipHelper zipHelper)
+        public BusinessLogic(IAppSettings appSettings, IAppLogging appLogging, IPathHelper pathHelper, IZipHelper zipHelper)
         {
             this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
             this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
             this.zipHelper = zipHelper ?? throw new ArgumentNullException(nameof(zipHelper));
         }
@@ -24,7 +26,7 @@
             }
             catch (Exception e)
             {
-                LogException(e);
+                appLogging.Log(e);
 
                 throw new InvalidOperationException("An error occurred while loading the settings (see log file for details).");
             }
@@ -62,33 +64,49 @@
             return zipFiles;
         }
 
-        public async Task Unzip(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
+        public async Task UnzipAsync(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
             var zipFiles = GetZipFiles();
 
             ValidateFolder(DestFolder, "Destination-Folder");
 
-            SourceFolder = Path.TrimEndingDirectorySeparator(SourceFolder);
-            DestFolder = Path.TrimEndingDirectorySeparator(DestFolder);
-
             var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
-                zipHelper.UnzipFile(zipFile, DestFolder);
+                // There is no need to call the token´s ThrowIfCancellationRequested() method here,
+                // since the Task.Run() method will cancel on its own, if the task was not already
+                // started. This results in the exact same behaviour, as checking for cancellation
+                // here, before unzipping. Additionally the unzipping and reporting here should be
+                // viewed as an atomar process, because when a file has unzipped, it is a progress.
+
+                try
+                {
+                    zipHelper.UnzipFile(zipFile, DestFolder);
+                }
+                catch (Exception e)
+                {
+                    appLogging.Log(e);
+
+                    throw;
+                }
 
                 progress?.Report(new()
                 {
                     ZipFile = zipFile,
-                    DestFolder = DestFolder
+                    DestFolder = Path.TrimEndingDirectorySeparator(DestFolder)
                 });
             },
             cancellationToken));
-            
-            await Task.WhenAll(tasks);
-        }
 
-        private static void LogException(Exception e)
-        {
-            // Todo: Create and use logger.
+            try
+            {
+                await Task.WhenAll(tasks).ConfigureAwait(false);
+            }
+            catch (Exception e)
+            {
+                appLogging.Log(e);
+
+                throw new InvalidOperationException("An error occurred while extracting the zip files (see log file for details).");
+            }
         }
 
         private void ValidateFolder(string folderValue, string folderName)

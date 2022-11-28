@@ -91,7 +91,7 @@ namespace WAUZ
                     progressBar.Maximum = businessLogic.GetZipFiles().Count();
                     progressBar.Value = progressBar.Minimum;
 
-                    await businessLogic.Unzip(new Progress<ProgressData>(_ =>
+                    await businessLogic.UnzipAsync(new Progress<ProgressData>(_ =>
                     {
                         progressBar.Value++;
                         labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
@@ -106,6 +106,8 @@ namespace WAUZ
                     await semaphoreSlim.WaitAsync();
 
                     labelProgressBar.Text = "Progress: All addons successfully unzipped.";
+
+                    buttonUnzip.Text = normalText;
                 }
                 catch (InvalidOperationException ioex)
                 {
@@ -115,22 +117,17 @@ namespace WAUZ
                 {
                     ShowError("WOOFFI Canceled");
                 }
-
-                return;
             }
-
-            if (buttonUnzip.Text == cancelText)
+            else if (buttonUnzip.Text == cancelText)
             {
                 buttonUnzip.Text = normalText;
 
                 cancellationTokenSource.Cancel();
-
-                return;
             }
-
-            return;
-
-      
+            else
+            {
+                // Todo: This should never be reachable.
+            }
         }
 
         private static void SelectFolder(TextBox textBox, string startFolder)
