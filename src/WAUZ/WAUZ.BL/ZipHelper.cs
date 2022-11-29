@@ -4,12 +4,10 @@ namespace WAUZ.BL
 {
     public sealed class ZipHelper : IZipHelper
     {
-        private readonly IPathHelper pathHelper;
         private readonly IFileSystemHelper fileSystemHelper;
 
-        public ZipHelper(IPathHelper pathHelper, IFileSystemHelper fileSystemHelper)
+        public ZipHelper(IFileSystemHelper fileSystemHelper)
         {
-            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
             this.fileSystemHelper = fileSystemHelper ?? throw new ArgumentNullException(nameof(fileSystemHelper));
         }
 
@@ -27,23 +25,23 @@ namespace WAUZ.BL
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
 
-            // Rely on valid, absolute and existing paths only.
+            // Rely only on existing file and folder.
 
-            if (!pathHelper.IsValidAbsolutePathToExistingFile(zipFile))
+            if (!File.Exists(zipFile))
             {
-                throw new InvalidOperationException($"The '{nameof(zipFile)}' argument must be a valid, absolute path, to an existing file.");
+                throw new InvalidOperationException($"'{nameof(zipFile)}' has to be an existing file.");
             }
 
-            if (!pathHelper.IsValidAbsolutePathToExistingDirectory(destFolder))
+            if (!Directory.Exists(destFolder))
             {
-                throw new InvalidOperationException($"The '{nameof(destFolder)}' argument must be a valid, absolute path, to an existing directory.");
+                throw new InvalidOperationException($"'{nameof(destFolder)}' has to be an existing folder.");
             }
 
             // Rely only on file name with proper file extension.
 
             if (zipFile[^4..^0] != ".zip")
             {
-                throw new InvalidOperationException($"The '{nameof(zipFile)}' argument must be a file, ending with the '.zip' file extension.");
+                throw new InvalidOperationException($"'{nameof(zipFile)}' has to be a file, ending with the '.zip' file extension.");
             }
 
             // Rely only on folder with trailing slash/backslash trimmed (if existing).
