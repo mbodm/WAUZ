@@ -16,7 +16,7 @@
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
 
-            // Rely only on existing folders.
+            // Rely on existing folders only.
 
             if (!Directory.Exists(sourceFolder))
             {
@@ -28,11 +28,11 @@
                 throw new InvalidOperationException($"'{nameof(destFolder)}' has to be an existing folder.");
             }
 
-            // Rely only on folders with absolute path and with trailing slash/backslash trimmed (if existing).
+            // Rely on well-formed folders only.
 
-            sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceFolder));
-            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder));
-            
+            sourceFolder = GetWellFormedFolder(sourceFolder);
+            destFolder = GetWellFormedFolder(destFolder);
+
             // Create tuples, where every tuple represents a source path
             // and a corresponding destination path, to a file or folder.
 
@@ -66,7 +66,7 @@
                     {
                         Directory.Delete(dest, true);
                     }
-                    
+
                     Directory.Move(source, dest);
 
                     continue;
@@ -78,6 +78,14 @@
             }
         }
 
+        private static string GetWellFormedFolder(string folder)
+        {
+            // Logic in this class expects folders with absolute path
+            // and with trailing slash/backslash trimmed (if existing).
+
+            return Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
+        }
+
         private static IEnumerable<(string Source, string Dest)> CreateTuples(string sourceFolder, string destFolder)
         {
             // The MSDN page for the EnumerateFileSystemEntries() method has informations about the support of absolute and
@@ -86,25 +94,42 @@
             // all output paths are also absolute paths. And if the input argument is a relative path, all output paths are
             // also relative paths. Means: When it is safe to rely on the input here, it is also safe to rely on the output.
 
-            return Directory.EnumerateFileSystemEntries(sourceFolder).
-                Select(sourceEntry => new
+            return Directory.EnumerateFileSystemEntries(sourceFolder).Select(sourceEntry =>
+            {
+                // Not sure if a folder path can contain an ending separator here.
+                // But such a pre-emptive ending separator trimming has to happen
+                // anyway, for the Path.GetFileName() method below. Otherwise the
+                // result of that method could lead to some undesirable behaviour.
+                // So, maybe the trim call is unnecessary here. But: Safety first!
+
+                var source = Path.TrimEndingDirectorySeparator(sourceEntry);
+
+                // In .NET the Path.GetFileName() method is used for both jobs: To get the name of
+                // the file, as well as to get the name of the folder, a given path is pointing to.
+                // It is important to trim an existing ending separator char if used with a folder.
+                // Also keep in mind: The method does not care if the file or folder (a given path
+                // is pointing to) really exists and relies solely on the path string itself. Also
+                // note: The method can throw, in older .NET versions, but this is totally ok here.
+
+                var fileOrFolderName = Path.GetFileName(source);
+
+                // It is important to throw an exception here imo,
+                // instead of silently ignore some file or folder.
+
+                if (string.IsNullOrEmpty(fileOrFolderName))
                 {
-                    // Not sure if a folder path can contain an ending separator here.
-                    // So, maybe the trim call is unnecessary here. But: Safety first!
-                    
-                    Source = Path.TrimEndingDirectorySeparator(sourceEntry),
+                    throw new InvalidOperationException("Could not determine the name of some file or folder, while creating the tuples.");
+                }
 
-                    // In .NET the Path.GetFileName() method is used for both jobs: To get the name of
-                    // the file, as well as to get the name of the folder, a given path is pointing to.
-                    // It is important to trim an existing ending separator char if used with a folder.
-                    // Also keep in mind: The method does not care if the file or folder (a given path
-                    // is pointing to) really exists and relies solely on the path string itself. Also
-                    // note: The method can throw on older .NET platforms. But this is totally ok here.
+                // Build destination. Not sure if the Path.Combine() method will ever
+                // return a folder with an ending separator at all. But: Safety first!
 
-                    FileOrFolderName = Path.GetFileName(Path.TrimEndingDirectorySeparator(sourceEntry)) ?? string.Empty
-                }).
-                Where(a => a.FileOrFolderName != string.Empty).
-                Select(a => (a.Source, Dest: Path.Combine(destFolder, a.FileOrFolderName)));
+                var dest = Path.TrimEndingDirectorySeparator(Path.Combine(destFolder, fileOrFolderName));
+
+                // Return tuple, containing source and destination.
+
+                return (source, dest);
+            });
         }
 
         private static bool HasDirectoryAttribute(string path)

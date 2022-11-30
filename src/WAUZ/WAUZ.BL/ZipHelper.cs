@@ -25,7 +25,7 @@ namespace WAUZ.BL
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
 
-            // Rely only on existing file and folder.
+            // Rely on existing file and folder only.
 
             if (!File.Exists(zipFile))
             {
@@ -37,16 +37,16 @@ namespace WAUZ.BL
                 throw new InvalidOperationException($"'{nameof(destFolder)}' has to be an existing folder.");
             }
 
-            // Rely only on file name with proper file extension.
+            // Rely on file with proper file extension only.
 
-            if (zipFile[^4..^0] != ".zip")
+            if (zipFile[^4..^0].ToLower() != ".zip")
             {
-                throw new InvalidOperationException($"'{nameof(zipFile)}' has to be a file, ending with the '.zip' file extension.");
+                throw new InvalidOperationException($"'{nameof(zipFile)}' has to be a file that ends with the '.zip' file extension.");
             }
 
-            // Rely only on folder with trailing slash/backslash trimmed (if existing).
+            // Rely on well-formed folder only.
 
-            destFolder = Path.TrimEndingDirectorySeparator(destFolder);
+            destFolder = GetWellFormedFolder(destFolder);
 
             // Create temp folder, with random name.
 
@@ -57,13 +57,13 @@ namespace WAUZ.BL
 
             ZipFile.ExtractToDirectory(zipFile, tempFolder);
 
-            // Move all files and directories inside of temp folder, into destination folder.
-            // If destination folder already contains some of these files/directories, they
-            // are deleted from the destination folder, before the move operation starts.
+            // Move all files and directories inside of source folder, into destination folder.
+            // If destination folder already contains some of these files or directories, they
+            // are deleted from the destination folder first, before the move operation starts.
 
             fileSystemHelper.MoveFolderContent(tempFolder, destFolder);
 
-            // Delete temp folder, after the content of temp folder was moved.
+            // Delete temp folder, after content of temp folder was moved.
 
             if (Directory.Exists(tempFolder))
             {
@@ -71,13 +71,24 @@ namespace WAUZ.BL
             }
         }
 
+        private static string GetWellFormedFolder(string folder)
+        {
+            // Logic in this class expects folders with absolute path
+            // and with trailing slash/backslash trimmed (if existing).
+
+            return Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
+        }
+
         private static string CreateTempFolder()
         {
+            // Repeat until an exclusive folder name was found and no other folder with
+            // that name accidentally already exists there (i know... a VERY low chance).
+
             while (true)
             {
-                var randomFolderName = Path.GetRandomFileName().Replace(".", string.Empty).ToLower();
+                var randomFolderName = Path.GetRandomFileName().Replace(".", string.Empty);
 
-                var tempFolder = Path.Combine(Path.GetTempPath(), $"wauz-{randomFolderName}");
+                var tempFolder = Path.Combine(Path.GetTempPath(), $"WAUZ-{randomFolderName.ToUpper()}");
 
                 if (!Directory.Exists(tempFolder))
                 {
