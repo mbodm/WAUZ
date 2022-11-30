@@ -4,14 +4,12 @@
     {
         private readonly IAppSettings appSettings;
         private readonly IAppLogging appLogging;
-        private readonly IPathHelper pathHelper;
         private readonly IZipHelper zipHelper;
 
-        public BusinessLogic(IAppSettings appSettings, IAppLogging appLogging, IPathHelper pathHelper, IZipHelper zipHelper)
+        public BusinessLogic(IAppSettings appSettings, IAppLogging appLogging, IZipHelper zipHelper)
         {
             this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
-            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
             this.zipHelper = zipHelper ?? throw new ArgumentNullException(nameof(zipHelper));
         }
 

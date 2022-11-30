@@ -7,13 +7,6 @@ namespace WAUZ.BL
     {
         private readonly string xmlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AppDataMBODM", "WAUZ.xml");
 
-        private readonly IPathHelper pathHelper;
-
-        public AppSettings(IPathHelper pathHelper)
-        {
-            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
-        }
-
         public IDictionary<string, string> Settings { get; } = new Dictionary<string, string>();
 
         public void Load()
@@ -35,9 +28,15 @@ namespace WAUZ.BL
 
         public void Save()
         {
-            var folder = pathHelper.GetParentDirectoryFromValidAbsolutePath(xmlFile);
+            // In .NET the Path.GetDirectoryName() method is used to get that directory, which
+            // contains the file or folder, a given path is pointing to. And keep in mind: The
+            // method does not care if the file or folder (a given path is pointing to) really
+            // exists and relies solely on the path string itself. Additional note: The method
+            // can throw, in older .NET versions or if path is too long, but this is fine here.
 
-            if (folder == string.Empty)
+            var folder = Path.GetDirectoryName(xmlFile);
+
+            if (string.IsNullOrEmpty(folder))
             {
                 throw new InvalidOperationException("Could not determine folder.");
             }
