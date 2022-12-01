@@ -31,7 +31,7 @@ So, downloading the addons manually (which is not the time consuming bottleneck 
 
 There are not any other special requirements. All the release builds are compiled with *win-x64* as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
 
-You can download self-contained .NET application builds, as well as framework-dependent .NET application builds. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
+You can choose between self-contained and framework-dependent .NET application builds, when downloading a release. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
 
 WAUZ is just a typical ".exe" file Windows application. Just download the newest release, from the releases page, unzip and run it. That´s it. No installer, setup or something like that.
 
