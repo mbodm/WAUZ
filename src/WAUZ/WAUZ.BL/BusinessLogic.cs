@@ -34,7 +34,7 @@
                 SourceFolder = sourceFolder;
             }
 
-            if (appSettings.Settings.TryGetValue("dest", out var destFolder))
+            if (appSettings.Settings.TryGetValue("destination", out var destFolder))
             {
                 DestFolder = destFolder;
             }
@@ -43,7 +43,7 @@
         public void SaveSettings()
         {
             appSettings.Settings["source"] = SourceFolder;
-            appSettings.Settings["dest"] = DestFolder;
+            appSettings.Settings["destination"] = DestFolder;
 
             try
             {

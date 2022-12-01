@@ -122,11 +122,11 @@
             // labelProgressBar
             // 
             this.labelProgressBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.labelProgressBar.AutoSize = true;
+            this.labelProgressBar.AutoEllipsis = true;
             this.labelProgressBar.Location = new System.Drawing.Point(9, 258);
             this.labelProgressBar.Margin = new System.Windows.Forms.Padding(0);
             this.labelProgressBar.Name = "labelProgressBar";
-            this.labelProgressBar.Size = new System.Drawing.Size(55, 15);
+            this.labelProgressBar.Size = new System.Drawing.Size(485, 15);
             this.labelProgressBar.TabIndex = 6;
             this.labelProgressBar.Text = "Progress:";
             // 

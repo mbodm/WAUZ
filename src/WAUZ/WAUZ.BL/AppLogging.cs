@@ -5,7 +5,7 @@ namespace WAUZ.BL
     public sealed class AppLogging : IAppLogging
     {
         private readonly object syncRoot = new();
-        private readonly string logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AppDataMBODM", "WAUZ.log");
+        private readonly string logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MBODM", "WAUZ.log");
 
         public void Log(string message)
         {

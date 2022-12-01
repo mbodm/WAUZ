@@ -5,7 +5,7 @@ namespace WAUZ.BL
 {
     public sealed class AppSettings : IAppSettings
     {
-        private readonly string xmlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), "AppDataMBODM", "WAUZ.xml");
+        private readonly string xmlFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "MBODM", "WAUZ.xml");
 
         public IDictionary<string, string> Settings { get; } = new Dictionary<string, string>();
 

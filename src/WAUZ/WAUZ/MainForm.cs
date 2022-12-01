@@ -1,14 +1,12 @@
-using System.Windows.Forms;
 using WAUZ.BL;
 
 namespace WAUZ
 {
     public partial class MainForm : Form
     {
-        private readonly IBusinessLogic businessLogic;
-        private readonly SemaphoreSlim semaphoreSlim = new(0, 1);
-
         private CancellationTokenSource cancellationTokenSource = new();
+
+        private readonly IBusinessLogic businessLogic;
 
         public MainForm(IBusinessLogic businessLogic)
         {
@@ -73,48 +71,54 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            SetControls(false);
-            labelProgressBar.Enabled = true;
-            progressBar.Enabled = true;
-
-            cancellationTokenSource = new(new TimeSpan(0, 0, 30));
-            
             try
             {
+                SetControls(false);
+
+                labelProgressBar.Enabled = true;
+                progressBar.Enabled = true;
+
+                cancellationTokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 30));
+
                 businessLogic.SourceFolder = textBoxSource.Text;
                 businessLogic.DestFolder = textBoxDest.Text;
 
                 progressBar.Maximum = businessLogic.GetZipFiles().Count();
                 progressBar.Value = progressBar.Minimum;
 
-                await businessLogic.UnzipAsync(new Progress<ProgressData>(_ =>
+                await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
                 {
                     progressBar.Value++;
-                    labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
-
-                    if (progressBar.Value == progressBar.Maximum)
-                    {
-                        semaphoreSlim.Release();
-                    }
+                    var zipFileName = Path.GetFileName(progressData.ZipFile);
+                    labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons ... ({zipFileName})";
                 }),
                 cancellationTokenSource.Token);
 
-                await semaphoreSlim.WaitAsync();
+                // Even with typical semaphore-blocking-mechanism* it is impossible to prevent Windows.Forms
+                // ProgressBar control from reaching its maximum, shortly after last async progress happened.
+                // Control is painted natively by the WinApi/OS itself, therefore also no event-based tricks
+                // will solve problem. Just added some short async wait delay instead, to keep things simple.
+                // *(TAP concepts, when using IProgress, often need some semaphore-blocking-mechanism, cause
+                // scheduler can still produce async progress, even when Task.WhenAll() already has finished).
 
-                ShowError("früh");
+                await Task.Delay(1500);
 
                 labelProgressBar.Text = "Progress: All addons successfully unzipped.";
             }
             catch (InvalidOperationException ioex)
             {
                 ShowError(ioex.Message);
+                labelProgressBar.Text = "Error occurred.";
             }
             catch (OperationCanceledException)
             {
                 ShowError("WOOFFI Canceled");
+                labelProgressBar.Text = "Error occurred.";
             }
-
-            SetControls(true);
+            finally
+            {
+                SetControls(true);
+            }
         }
 
         private static void SelectFolder(TextBox textBox, string startFolder)
@@ -135,14 +139,14 @@ namespace WAUZ
             return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
-        private static void ShowError(string errorText)
-        {
-            MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         private void SetControls(bool state)
         {
             Controls.Cast<Control>().ToList().ForEach(control => control.Enabled = state);
+        }
+
+        private static void ShowError(string errorText)
+        {
+            MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

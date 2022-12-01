@@ -58,7 +58,7 @@ namespace WAUZ.BL
             {
                 var randomFolderName = Path.GetRandomFileName().Replace(".", string.Empty);
 
-                var tempFolder = Path.Combine(userTempFolder, $"WAUZ-{randomFolderName.ToUpper()}");
+                var tempFolder = Path.Combine(userTempFolder, $"MBODM.WAUZ.{randomFolderName.ToLower()}.tmp");
 
                 if (!Directory.Exists(tempFolder))
                 {
