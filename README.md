@@ -7,6 +7,15 @@ An unzip tool for World of Warcraft addons
 It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraft **A**ddon **U**n**Z**ip). It´s used to unzip a bunch of downloaded zip files  inside a folder into another folder (in this case the zip files are addons for the popular MMORPG game *World of Warcraft*). It´s sole purpose is just to unzip the files into some folder, to make your life a little bit easier. Nothing else.
 
 ### How it works
+- Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some download folder.
+- Start WAUZ
+- Select the folder which contains the downloaded addon zip files (Source-Folder). Typically some temporary download folder.
+- Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
+
+
+
+
+
 - When started, `wingetupd.exe` searches for a so-called _package-file_. The package-file is simply a file named "packages.txt", located in the same folder as the `wingetupd.exe`. The package-file contains a list of WinGet package-id´s (__not__ package-names, this is important, see [Notes](#Notes) section below).
 - So, when `wingetupd.exe` is started and it founds a package-file, it just checks for each WinGet package-id listed in the package-file, if that package exists, if that package is installed and if that package has an update. If so, it updates the package. `wingetupd.exe` does all of this, by using WinGet internally.
 - This means: All you have to do, is to edit the package-file and insert the WinGet package-id´s of your installed Windows applications you want to update. When `wingetupd.exe` is executed, it will try to update all that packages (aka "your Windows applications").
