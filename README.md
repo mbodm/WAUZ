@@ -33,7 +33,7 @@ There are not any other special requirements. All the release builds are compile
 
 You can choose between self-contained and framework-dependent .NET application builds, when downloading a release. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
 
-WAUZ is just a typical ".exe" file Windows application. Just download the newest release, from the releases page, unzip and run it. That´s it. No installer, setup or something like that.
+WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Notes
 - When `wingetupd.exe` starts, it creates a log file named "wingetupd.log" in the same folder.
