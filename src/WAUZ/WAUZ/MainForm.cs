@@ -7,10 +7,12 @@ namespace WAUZ
         private CancellationTokenSource cancellationTokenSource = new();
 
         private readonly IBusinessLogic businessLogic;
+        private readonly IAppLogging appLogging;
 
-        public MainForm(IBusinessLogic businessLogic)
+        public MainForm(IBusinessLogic businessLogic, IAppLogging appLogging)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
 
             InitializeComponent();
 
@@ -103,17 +105,23 @@ namespace WAUZ
 
                 await Task.Delay(1500);
 
-                labelProgressBar.Text = "Progress: All addons successfully unzipped.";
+                labelProgressBar.Text = $"Progress: {progressBar.Value} addons successfully unzipped.";
             }
-            catch (InvalidOperationException ioex)
+            catch (Exception ex)
             {
-                ShowError(ioex.Message);
+                appLogging.Log(ex);
+
+                if (ex is InvalidOperationException)
+                {
+                    ShowError(ex.Message);
+                }
+                else
+                {
+                    ShowError("An unexpected error occurred (see log file for details).");
+                }
+
                 labelProgressBar.Text = "Error occurred.";
-            }
-            catch (OperationCanceledException)
-            {
-                ShowError("WOOFFI Canceled");
-                labelProgressBar.Text = "Error occurred.";
+                progressBar.Value = progressBar.Minimum;
             }
             finally
             {

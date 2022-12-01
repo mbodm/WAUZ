@@ -16,7 +16,7 @@ namespace WAUZ.BL
 
             lock (syncRoot)
             {
-                WriteLogEntry(message);
+                WriteLogEntry($"{message}{Environment.NewLine}");
             }
         }
 
@@ -30,9 +30,9 @@ namespace WAUZ.BL
             lock (syncRoot)
             {
                 WriteLogEntry(
-                    $"Exception occurred ({exception.GetType().Name}).{Environment.NewLine}" +
-                    $"Exception-Message:{Environment.NewLine}" +
-                    $"{exception.Message}{Environment.NewLine}" +
+                    $"Exception occurred{Environment.NewLine}" +
+                    $"Exception-Type: {exception.GetType().Name}{Environment.NewLine}" +
+                    $"Exception-Message: {exception.Message}{Environment.NewLine}" +
                     $"Exception-StackTrace:{Environment.NewLine}" +
                     $"{exception.StackTrace}{Environment.NewLine}");
             }
