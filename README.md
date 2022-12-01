@@ -15,17 +15,9 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 - Press the "Unzip" button.
 - Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, besides the files and folders that will be unzipped from the zip files.
 - Hint: WAUZ will save your folder settings automatically, when you close the app.
- 
-
-
-
-
-- When started, `wingetupd.exe` searches for a so-called _package-file_. The package-file is simply a file named "packages.txt", located in the same folder as the `wingetupd.exe`. The package-file contains a list of WinGet package-id´s (__not__ package-names, this is important, see [Notes](#Notes) section below).
-- So, when `wingetupd.exe` is started and it founds a package-file, it just checks for each WinGet package-id listed in the package-file, if that package exists, if that package is installed and if that package has an update. If so, it updates the package. `wingetupd.exe` does all of this, by using WinGet internally.
-- This means: All you have to do, is to edit the package-file and insert the WinGet package-id´s of your installed Windows applications you want to update. When `wingetupd.exe` is executed, it will try to update all that packages (aka "your Windows applications").
 
 ### Why it exists
-Todo: Describe Curse problematic and link to WADM
+I wrote a full featured download manager, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of my addon updating with ease. But since Curse/Overwolf changed their political stance, download managers like WADM or others no longer works with https://www.curseforge.com and their REST api. So downloading them manually (which is not the time consuming bottleneck here) and unzipping them, with the help of a tool like WAUZ, is a good alternative to a full fledged download manager. For more information about the "end of all alternative addon download managers" follow the links on my above mentioned WADM GitHub site, or use your GoogleFu.
 
 ### Requirements
 There are not any special requirements, besides having WinGet installed on your machine. `wingetupd.exe` is just a typical command line ".exe" file for Windows. Just download the newest release, from the [Releases](https://github.com/MBODM/wingetupd/releases) page, unzip and run it. All the releases are compiled for x64, assuming you are using some 64-bit Windows (and that's quite likely).
