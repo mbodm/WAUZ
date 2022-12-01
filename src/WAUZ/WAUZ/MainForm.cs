@@ -1,3 +1,4 @@
+using System.Windows.Forms;
 using WAUZ.BL;
 
 namespace WAUZ
@@ -5,15 +6,13 @@ namespace WAUZ
     public partial class MainForm : Form
     {
         private readonly IBusinessLogic businessLogic;
-        private readonly IPathHelper pathHelper;
+        private readonly SemaphoreSlim semaphoreSlim = new(0, 1);
 
-        private CancellationTokenSource cancellationTokenSource = new(1000 * 30);
-        private SemaphoreSlim semaphoreSlim = new(0, 1);
+        private CancellationTokenSource cancellationTokenSource = new();
 
-        public MainForm(IBusinessLogic businessLogic, IPathHelper pathHelper)
+        public MainForm(IBusinessLogic businessLogic)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
-            this.pathHelper = pathHelper ?? throw new ArgumentNullException(nameof(pathHelper));
 
             InitializeComponent();
 
@@ -74,60 +73,48 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            var normalText = "&Unzip";
-            var cancelText = "&Cancel";
+            SetControls(false);
+            labelProgressBar.Enabled = true;
+            progressBar.Enabled = true;
 
-            if (buttonUnzip.Text == normalText)
+            cancellationTokenSource = new(new TimeSpan(0, 0, 30));
+            
+            try
             {
-                buttonUnzip.Text = cancelText;
+                businessLogic.SourceFolder = textBoxSource.Text;
+                businessLogic.DestFolder = textBoxDest.Text;
 
-                cancellationTokenSource = new();
+                progressBar.Maximum = businessLogic.GetZipFiles().Count();
+                progressBar.Value = progressBar.Minimum;
 
-                try
+                await businessLogic.UnzipAsync(new Progress<ProgressData>(_ =>
                 {
-                    businessLogic.SourceFolder = textBoxSource.Text;
-                    businessLogic.DestFolder = textBoxDest.Text;
+                    progressBar.Value++;
+                    labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
 
-                    progressBar.Maximum = businessLogic.GetZipFiles().Count();
-                    progressBar.Value = progressBar.Minimum;
-
-                    await businessLogic.UnzipAsync(new Progress<ProgressData>(_ =>
+                    if (progressBar.Value == progressBar.Maximum)
                     {
-                        progressBar.Value++;
-                        labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons.";
+                        semaphoreSlim.Release();
+                    }
+                }),
+                cancellationTokenSource.Token);
 
-                        if (progressBar.Value == progressBar.Maximum)
-                        {
-                            semaphoreSlim.Release();
-                        }
-                    }),
-                    cancellationTokenSource.Token);
+                await semaphoreSlim.WaitAsync();
 
-                    await semaphoreSlim.WaitAsync();
+                ShowError("früh");
 
-                    labelProgressBar.Text = "Progress: All addons successfully unzipped.";
-
-                    buttonUnzip.Text = normalText;
-                }
-                catch (InvalidOperationException ioex)
-                {
-                    ShowError(ioex.Message);
-                }
-                catch (OperationCanceledException)
-                {
-                    ShowError("WOOFFI Canceled");
-                }
+                labelProgressBar.Text = "Progress: All addons successfully unzipped.";
             }
-            else if (buttonUnzip.Text == cancelText)
+            catch (InvalidOperationException ioex)
             {
-                buttonUnzip.Text = normalText;
-
-                cancellationTokenSource.Cancel();
+                ShowError(ioex.Message);
             }
-            else
+            catch (OperationCanceledException)
             {
-                // Todo: This should never be reachable.
+                ShowError("WOOFFI Canceled");
             }
+
+            SetControls(true);
         }
 
         private static void SelectFolder(TextBox textBox, string startFolder)
@@ -151,6 +138,11 @@ namespace WAUZ
         private static void ShowError(string errorText)
         {
             MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void SetControls(bool state)
+        {
+            Controls.Cast<Control>().ToList().ForEach(control => control.Enabled = state);
         }
     }
 }

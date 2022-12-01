@@ -61,7 +61,9 @@
         {
             ValidateFolder(SourceFolder, "Source-Folder");
 
-            var zipFiles = Directory.GetFiles(SourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
+            var sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(SourceFolder));
+
+            var zipFiles = Directory.GetFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
 
             if (!zipFiles.Any())
             {
@@ -77,17 +79,17 @@
 
             ValidateFolder(DestFolder, "Destination-Folder");
 
+            var destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(DestFolder));
+
             var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
-                // There is no need to call the token´s ThrowIfCancellationRequested() method here,
-                // since the Task.Run() method will cancel on its own, if the task was not already
-                // started. This results in the exact same behaviour, as checking for cancellation
-                // here, before unzipping. Additionally the unzipping and reporting here should be
-                // viewed as an atomar process, because when a file has unzipped, it is a progress.
+                // No need for ThrowIfCancellationRequested() here, since Task.Run() will cancel on its own,
+                // if task not already started. Which results in exactly the same behavior, since unzipping
+                // and reporting should be viewed as atomic. Cause if a file was unzipped, it is a progress.
 
                 try
                 {
-                    zipHelper.UnzipFile(zipFile, DestFolder);
+                    zipHelper.UnzipFile(zipFile, destFolder);
                 }
                 catch (Exception e)
                 {
@@ -99,7 +101,7 @@
                 progress?.Report(new()
                 {
                     ZipFile = zipFile,
-                    DestFolder = Path.TrimEndingDirectorySeparator(DestFolder)
+                    DestFolder = destFolder
                 });
             },
             cancellationToken));
@@ -123,26 +125,74 @@
                 throw new InvalidOperationException($"{folderName} missing.");
             }
 
-            if (!pathHelper.IsValidAbsolutePathToExistingDirectory(SourceFolder))
+            if (!IsValidAbsolutePath(folderValue) || !Directory.Exists(SourceFolder))
             {
                 throw new InvalidOperationException($"{folderName} is not a valid path. " +
-                    "Given path must be a valid, absolute path, to an existing directory.");
+                    "Given path must be a valid, absolute path, to an existing folder.");
             }
 
-            // It is possible to foresee the maximum length of a source path, for every zip file.
-            // But it is not really possible to foresee the maximum length of a destination path,
-            // after all of the zip file contents (files and subfolders) are also included there.
-            // Therefore, as a "rule of thumb", the half of the maximum path length is used here.
-            // It seems totally fine to me, to let the unzip operation fail gracefully (throwing
-            // an exception), if in some special case a complete path exceeds the maximum length.
+            // Easy to foresee max length of source. Not that easy to foresee max length of dest,
+            // when also considering zip file content (files and subfolders). Instead just using
+            // half of MAX_PATH here, as some "rule of thumb". If in some rare cases a full dest
+            // path exceeds MAX_PATH, it is ok to let unzip operation fail gracefully on its own.
 
-            var maxLength = 260 / 2;
+            var maxPath = 260;
+            var maxLength = maxPath / 2;
 
             if (folderValue.Length > maxLength)
             {
                 throw new InvalidOperationException($"{folderName} path is too long. " +
                     $"Make sure given path is smaller than {maxLength} characters.");
             }
+        }
+
+        private static bool IsValidAbsolutePath(string path)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    var parentFolder = Path.GetDirectoryName(path);
+
+                    if (!string.IsNullOrEmpty(parentFolder))
+                    {
+                        if (!Path.GetInvalidPathChars().Any(invalidPathChar => parentFolder.Contains(invalidPathChar)))
+                        {
+                            var fileOrFolderName = Path.GetFileName(path);
+
+                            if (!string.IsNullOrEmpty(fileOrFolderName))
+                            {
+                                if (!Path.GetInvalidFileNameChars().Any(invalidFileNameChar => fileOrFolderName.Contains(invalidFileNameChar)))
+                                {
+                                    if (Path.IsPathFullyQualified(path))
+                                    {
+                                        if (Path.IsPathRooted(path))
+                                        {
+                                            var root = Path.GetPathRoot(path);
+
+                                            if (!string.IsNullOrEmpty(root))
+                                            {
+                                                var drives = DriveInfo.GetDrives().Select(drive => drive.Name);
+
+                                                if (drives.Contains(root))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                // Hiding exceptions is intended design for this method.
+            }
+
+            return false;
         }
     }
 }

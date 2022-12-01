@@ -28,18 +28,14 @@ namespace WAUZ.BL
 
         public void Save()
         {
-            // In .NET the Path.GetDirectoryName() method is used to get that directory, which
-            // contains the file or folder, a given path is pointing to. And keep in mind: The
-            // method does not care if the file or folder (a given path is pointing to) really
-            // exists and relies solely on the path string itself. Additional note: The method
-            // can throw, in older .NET versions or if path is too long, but this is fine here.
-
             var folder = Path.GetDirectoryName(xmlFile);
 
             if (string.IsNullOrEmpty(folder))
             {
                 throw new InvalidOperationException("Could not determine folder.");
             }
+
+            folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
 
             if (!Directory.Exists(folder))
             {

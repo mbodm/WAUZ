@@ -13,8 +13,6 @@ namespace WAUZ.BL
 
         public void UnzipFile(string zipFile, string destFolder)
         {
-            // Guard method arguments.
-
             if (string.IsNullOrWhiteSpace(zipFile))
             {
                 throw new ArgumentException($"'{nameof(zipFile)}' cannot be null or whitespace.", nameof(zipFile));
@@ -24,8 +22,6 @@ namespace WAUZ.BL
             {
                 throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
             }
-
-            // Rely on existing file and folder only.
 
             if (!File.Exists(zipFile))
             {
@@ -37,58 +33,32 @@ namespace WAUZ.BL
                 throw new InvalidOperationException($"'{nameof(destFolder)}' has to be an existing folder.");
             }
 
-            // Rely on file with proper file extension only.
-
             if (zipFile[^4..^0].ToLower() != ".zip")
             {
                 throw new InvalidOperationException($"'{nameof(zipFile)}' has to be a file that ends with the '.zip' file extension.");
             }
 
-            // Rely on well-formed folder only.
-
-            destFolder = GetWellFormedFolder(destFolder);
-
-            // Create temp folder, with random name.
-
             var tempFolder = CreateTempFolder();
 
-            // Extract zip file into temp folder (there are some good reasons to
-            // use a temp folder, instead of unzip directly into the dest folder).
+            // Extract zip file into temp folder. Then move temp folder content into dest folder.
+            // Using temp folder for good reasons, instead of extracting directly to dest folder.
 
-            ZipFile.ExtractToDirectory(zipFile, tempFolder);
+            ZipFile.ExtractToDirectory(Path.GetFullPath(zipFile), tempFolder);
 
-            // Move all files and directories inside of source folder, into destination folder.
-            // If destination folder already contains some of these files or directories, they
-            // are deleted from the destination folder first, before the move operation starts.
+            fileSystemHelper.MoveFolderContent(tempFolder, Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder)));
 
-            fileSystemHelper.MoveFolderContent(tempFolder, destFolder);
-
-            // Delete temp folder, after content of temp folder was moved.
-
-            if (Directory.Exists(tempFolder))
-            {
-                Directory.Delete(tempFolder, true);
-            }
-        }
-
-        private static string GetWellFormedFolder(string folder)
-        {
-            // Logic in this class expects folders with absolute path
-            // and with trailing slash/backslash trimmed (if existing).
-
-            return Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
+            DeleteTempFolder(tempFolder);
         }
 
         private static string CreateTempFolder()
         {
-            // Repeat until an exclusive folder name was found and no other folder with
-            // that name accidentally already exists there (i know... a VERY low chance).
+            var userTempFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.GetTempPath()));
 
-            while (true)
+            for (int i = 1; i < 10; i++)
             {
                 var randomFolderName = Path.GetRandomFileName().Replace(".", string.Empty);
 
-                var tempFolder = Path.Combine(Path.GetTempPath(), $"WAUZ-{randomFolderName.ToUpper()}");
+                var tempFolder = Path.Combine(userTempFolder, $"WAUZ-{randomFolderName.ToUpper()}");
 
                 if (!Directory.Exists(tempFolder))
                 {
@@ -96,6 +66,21 @@ namespace WAUZ.BL
 
                     return tempFolder;
                 }
+            }
+
+            throw new InvalidOperationException("Could not create temp folder.");
+        }
+
+        private static void DeleteTempFolder(string tempFolder)
+        {
+            if (Directory.Exists(tempFolder))
+            {
+                Directory.Delete(tempFolder, true);
+            }
+
+            if (Directory.Exists(tempFolder))
+            {
+                throw new InvalidOperationException("Could not delete temp folder.");
             }
         }
     }
