@@ -1,5 +1,5 @@
 # WAUZ
-An unzip tool for World of Warcraft addons
+A tiny unzip tool for World of Warcraft addons
 
 ![WAUZ](screenshot.png)
 
