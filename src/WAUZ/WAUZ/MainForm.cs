@@ -17,6 +17,7 @@ namespace WAUZ
             InitializeComponent();
 
             MinimumSize = Size;
+            Text = $"WAUZ {GetVersion()}";
 
             textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Normally some temporary download folder.";
             textBoxDest.PlaceholderText = "The folder to unzip the addons into. Normally the World of Warcraft AddOns folder.";
@@ -127,6 +128,14 @@ namespace WAUZ
             {
                 SetControls(true);
             }
+        }
+
+        private static string GetVersion()
+        {
+            // Most simple way to get product version (semantic versioning)
+            // in .NET5/6 onwards. Used as "Version" entry in .csproj file.
+
+            return Application.ProductVersion.ToString();
         }
 
         private static void SelectFolder(TextBox textBox, string startFolder)

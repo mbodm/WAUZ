@@ -9,12 +9,16 @@
     <ApplicationIcon>WAUZ.ico</ApplicationIcon>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="WAUZ.ico" />
-  </ItemGroup>
+  <PropertyGroup>
+    <Version>1.0.0</Version>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WAUZ.BL\WAUZ.BL.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="WAUZ.ico" />
   </ItemGroup>
 
 </Project>
