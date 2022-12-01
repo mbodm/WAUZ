@@ -12,8 +12,8 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 - Start WAUZ
 - Select the folder which contains the downloaded addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
-- Press the "Unzip" button
-- Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, than the ones it unzips out of the zip files.
+- Press the "Unzip" button.
+- Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, besides the files and folders that will be unzipped from the zip files.
 - Hint: WAUZ will save your folder settings automatically, when you close the app.
  
 
