@@ -26,7 +26,14 @@ I developed a download manager for World of Warcraft addons, called [WADM](https
 So, downloading the addons manually (which is not the time consuming bottleneck here) and unzipping them, with the help of a tool like WAUZ, is still not the worst alternative to a full featured download manager. For more information about the "end of all alternative addon download managers" follow the links on my above mentioned WADM GitHub site, or use your GoogleFu.
 
 ### Requirements
-There are not any special requirements, besides having WinGet installed on your machine. `wingetupd.exe` is just a typical command line ".exe" file for Windows. Just download the newest release, from the [Releases](https://github.com/MBODM/wingetupd/releases) page, unzip and run it. All the releases are compiled for x64, assuming you are using some 64-bit Windows (and that's quite likely).
+
+- Windows 64-bit OS
+
+There are not any special requirements, besides running a Windows 64-bit machine. All the release builds are compiled with *win-x64* as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
+
+You can download self-contained .NET app builds, as well as framework-dependent .NET app builds. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
+
+WAUZ is just a typical Windows app ".exe" file. Just download the newest release, from the releases page, unzip and run it. That´s it.
 
 ### Notes
 - When `wingetupd.exe` starts, it creates a log file named "wingetupd.log" in the same folder.
