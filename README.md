@@ -8,11 +8,11 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 
 ### How it works
 - Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some temporary download folder.
-- Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them all, is way more time consuming. But that´s the moment when WAUZ comes to rescue. :)
 - Start WAUZ
 - Select the folder which contains the downloaded addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
+- Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them all, is way more time consuming. But that´s the moment when WAUZ comes to rescue. :)
 - Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, besides the files and folders that will be unzipped from the zip files.
 - Hint: WAUZ will save your folder settings automatically, when you close the app.
 
