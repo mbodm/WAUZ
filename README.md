@@ -12,7 +12,10 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 - Start WAUZ
 - Select the folder which contains the downloaded addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
-
+- Press the "Unzip" button
+- Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, than the ones it unzips out of the zip files.
+- Hint: WAUZ will save your folder settings automatically, when you close the app.
+ 
 
 
 
@@ -21,17 +24,8 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 - So, when `wingetupd.exe` is started and it founds a package-file, it just checks for each WinGet package-id listed in the package-file, if that package exists, if that package is installed and if that package has an update. If so, it updates the package. `wingetupd.exe` does all of this, by using WinGet internally.
 - This means: All you have to do, is to edit the package-file and insert the WinGet package-id´s of your installed Windows applications you want to update. When `wingetupd.exe` is executed, it will try to update all that packages (aka "your Windows applications").
 
-### Parameters
-`wingetupd.exe` knows the following parameters:
-- `--no-log`
-- `--no-confirm`
-- `--help`
-
-`--no-log` prevents `wingetupd.exe` from creating a log file. The log file contains all the internally used WinGet calls and their output, so you can exactly see how WinGet was used. Sometimes you just don´t want a log file (for whatever reason). Or maybe `wingetupd.exe` can´t create a log file, because it resides in a folder that has no write permissions (see [Notes](#Notes) section below). In such situations this parameter is to the rescue.
-
-`--no-confirm` prevents `wingetupd.exe` from asking the user for confirmation, if it should update the updatable packages. So you can use this parameter to automatically update all updatable packages, without asking for confirmation. This parameter is useful when running `wingetupd.exe` in scripts.
-
-`--help` shows the usage screen and lists the `wingetupd.exe` parameters.
+### Why it exists
+Todo: Describe Curse problematic and link to WADM
 
 ### Requirements
 There are not any special requirements, besides having WinGet installed on your machine. `wingetupd.exe` is just a typical command line ".exe" file for Windows. Just download the newest release, from the [Releases](https://github.com/MBODM/wingetupd/releases) page, unzip and run it. All the releases are compiled for x64, assuming you are using some 64-bit Windows (and that's quite likely).
