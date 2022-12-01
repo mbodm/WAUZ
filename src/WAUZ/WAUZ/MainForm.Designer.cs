@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.buttonSource = new System.Windows.Forms.Button();
             this.buttonDest = new System.Windows.Forms.Button();
             this.textBoxSource = new System.Windows.Forms.TextBox();
@@ -126,7 +127,7 @@
             this.labelProgressBar.Location = new System.Drawing.Point(9, 258);
             this.labelProgressBar.Margin = new System.Windows.Forms.Padding(0);
             this.labelProgressBar.Name = "labelProgressBar";
-            this.labelProgressBar.Size = new System.Drawing.Size(485, 15);
+            this.labelProgressBar.Size = new System.Drawing.Size(400, 15);
             this.labelProgressBar.TabIndex = 6;
             this.labelProgressBar.Text = "Progress:";
             // 
@@ -144,6 +145,7 @@
             this.Controls.Add(this.textBoxSource);
             this.Controls.Add(this.buttonDest);
             this.Controls.Add(this.buttonSource);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

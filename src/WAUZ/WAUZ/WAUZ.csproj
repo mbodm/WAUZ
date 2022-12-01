@@ -6,7 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>WAUZ.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="WAUZ.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\WAUZ.BL\WAUZ.BL.csproj" />
