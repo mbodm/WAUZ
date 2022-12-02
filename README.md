@@ -36,8 +36,8 @@ You can choose between self-contained and framework-dependent .NET application b
 WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Notes
-- WAUZ saves your selected folders in a settings file automatically when you close the app.
-- WAUZ loads your selected folders from that settings file automatically when you open the app.
+- WAUZ saves your selected folders automatically in a settings file when you close the app.
+- WAUZ loads your selected folders automatically from that settings file when you open the app.
 - WAUZ writes a log file if some error happens.
 - You can find both files (settings and log) in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
 - WAUZ uses a timeout of 30 seconds, while unzipping the zip files.
