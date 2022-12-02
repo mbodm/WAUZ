@@ -36,30 +36,16 @@ You can choose between self-contained and framework-dependent .NET application b
 WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Notes
-- When `wingetupd.exe` starts, it creates a log file named "wingetupd.log" in the same folder.
-- So keep in mind: That folder needs security permissions for writing files in it.
-- Some locations like "C:\\" or "C:\ProgramFiles" don´t have such security permissions (for a good reason).
-- If you don´t wanna run `wingetupd.exe` just from Desktop, "C:\Users\USERNAME\AppData\Local" is fine too.
-- You can also use the `--no-log` parameter, to prevent the creation of the log file (`wingetupd.exe --no-log`).
-- All internally used WinGet calls are based on exact WinGet package-id´s (WinGet parameters: `--exact --id`).
-- Use `winget search`, to find out the package-id´s (you put into the package-file) of your installed applications.
-- Use the `--no-confirm` parameter, to automatically update packages, if `wingetupd.exe` is used inside a script.
-- `wingetupd.exe` uses a timeout of 30 seconds, when waiting for WinGet to finish.
-- Since some installations can take rather long, this timeout is increased to 60 minutes, while updates occur.
-- The release binaries also contain a `wingetupd.bat` file, so you can run `wingetupd.exe` by a simple doubleclick.
-- Q: _Why this tool and not just `winget --upgrade-all` ?_ A: Often you don´t wanna update all stuff (i.e. runtimes).
-- Q: _Why this tool and not just some .bat or .ps script ?_ A: Maybe this is some better "out of the box" approach.
-- At time of writing, the package-id _Zoom.Zoom_ seems to missmatch the corresponding installed _Zoom_ package.
-- I assume the WinGet-Team will correct this wrong behaviour in their [packages repository](https://github.com/microsoft/winget-pkgs/tree/master/manifests) soon.
-- WinGet doesn´t support being called in parallel. If you fork: Don´t use concurrency, like `Task.WhenAll()`.
-- `wingetupd.exe` is written in C#, is using .NET 6 and is built with Visual Studio 2022.
+- WAUZ saves your selected folders in a settings file when you close the app.
+- WAUZ writes a log file if some error happens.
+- You can find both files in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
+- WAUZ uses a timeout of 30 seconds, while unzipping the zip files.
+- WAUZ is written in C# and developed with .NET 6, in Visual Studio 2022.
+- WAUZ is using Windows.Forms as GUI framework.
 - If you wanna compile the source by your own, you just need Visual Studio 2022 (any edition). Nothing else.
-- The release-binaries are compiled as _self-contained_ .NET 6 .exe files, with "win-x64" as target.
-- _Self-contained_: That´s the reason why the binariy-size is 15 MB and why there is no framework requirement.
-- The _.csproj_ source file contains some MSBUILD task, to create a zip file, when publishing with Visual Studio 2022.
-- GitHub´s default _.gitignore_ excludes VS publish-profiles, so i added a [publish-settings screenshot](img/screenshot-publish-settings.png) to repo.
+- The release-binaries are compiled as _self-contained_ and _framework-dependent_ .NET 6 .exe files, with "win-x64" as target.
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
-- `wingetupd.exe` just exists, because i am lazy and made my life a bit easier, by writing this tool. :grin:
+- WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool. :grin:
 
 #### Have fun.
 
