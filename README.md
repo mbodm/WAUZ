@@ -42,7 +42,7 @@ WAUZ is just a typical ".exe" file Windows application. Just download the newest
 - You can find both files (settings and log) in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
 - WAUZ uses a timeout of 30 seconds, while unzipping the zip files.
 - WAUZ unzips the files in parallel.
-- WAUZ will never touch (remove, overwrite, etc) any other files or folders in the Destination-Folder, besides the ones coming from the zip files.
+- WAUZ will never touch (remove or overwrite) any other files or folders in Destination-Folder, besides the ones coming from the zip files.
 - WAUZ is written in C# and developed with .NET 6, in Visual Studio 2022.
 - WAUZ is using Windows.Forms as GUI framework.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
