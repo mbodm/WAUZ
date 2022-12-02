@@ -43,7 +43,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - WAUZ is using Windows.Forms as UI framework (yes, because "rapid development").
 - There will also be a command line version of WAUZ. Soon.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
-- If you wanna compile the source by your own, you can use i.e. any edition of Visual Studio 2022. You need nothing else.
+- If you want to compile the source, you can just use i.e. Visual Studio 2022 (any edition) . You need nothing else.
 - The release-binaries are compiled as _self-contained_ and _framework-dependent_ .NET 6 .exe files, with "win-x64" as target.
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
 - The code is using a typical `CancellationToken` timeout pattern.
