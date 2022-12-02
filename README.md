@@ -52,6 +52,8 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 
 #### Have fun.
 
+---
+
 ##### Personal ideas
 - This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere in 1/100 cloud files or OneNote.
 - Add WAUZ command line version (easy, BusinessLogic already exists).
