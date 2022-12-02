@@ -55,7 +55,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 ---
 
 > ##### Personal ideas
-> - This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere in 1/100 cloud files or OneNote.
+> - This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere else.
 > - Add WAUZ command line version (easy, BusinessLogic already exists).
 > - Maybe add navigation links to UI, to quickly open the selected folders in Explorer?
 > - Maybe add navigation links to UI, to quickly open the settings/log files or folder?
