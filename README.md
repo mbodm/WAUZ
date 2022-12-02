@@ -27,7 +27,7 @@ So, downloading the addons manually (which is not the time consuming bottleneck 
 
 - 64-bit Windows
 
-There are not any other special requirements. All the release builds are compiled with *win-x64* as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
+There are not any other special requirements. All the release builds are compiled with "win-x64" as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
 
 You can choose between self-contained and framework-dependent .NET application builds, when downloading a release. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
 
