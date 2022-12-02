@@ -8,7 +8,7 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 
 It´s used to unzip a bunch of downloaded zip files, residing in some folder, into another folder (in this case the zip files are addons for the popular [World of Warcraft](https://worldofwarcraft.com) MMORPG game).
 
-It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier.
+It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### How it works
 - Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some folder.
@@ -17,8 +17,6 @@ It´s sole purpose is to extract zip files into a folder. Nothing else. It´s ju
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
-
-WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Why it exists
 I developed a download manager for World of Warcraft addons, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of my addon updating needs with ease. But since Curse/Overwolf changed their political stance, alternative download managers (like mine, Ajour, WowUp, or others) no longer works with the https://www.curseforge.com site, or their REST web service. The only option is to use their own addon download manager. Many of us don´t want that, for different reasons.
