@@ -62,5 +62,4 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 > - Maybe implement some temp folder cleanup check, before unzipping?
 > - To cleanup any existing/old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
-> Logfile size?
 > - But maybe add additional infos when log an exception (like the selected folders, etc).
