@@ -36,7 +36,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - WAUZ loads your selected folders automatically from that settings file when you open the app.
 - WAUZ writes a log file if some error happens.
 - You can find both files (settings and log) in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
-- WAUZ uses a timeout of 30 seconds, while unzipping the zip files.
+- WAUZ uses a timeout of 30 seconds, while unzipping the files.
 - WAUZ unzips the files in parallel.
 - WAUZ will never touch (remove or overwrite) any other files or folders in Destination-Folder, besides the ones coming from the zip files.
 - WAUZ is written in C# and developed with .NET 6, in Visual Studio 2022.
