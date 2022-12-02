@@ -40,7 +40,7 @@ You can choose between self-contained and framework-dependent .NET application b
 - WAUZ unzips the files in parallel.
 - WAUZ will never touch (remove or overwrite) any other files or folders in Destination-Folder, besides the ones coming from the zip files.
 - WAUZ is written in C# and developed with .NET 6, in Visual Studio 2022.
-- WAUZ is using Windows.Forms as GUI framework.
+- WAUZ is using Windows.Forms as UI framework.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
 - If you wanna compile the source by your own, you just need Visual Studio 2022 (any edition). Nothing else.
 - The release-binaries are compiled as _self-contained_ and _framework-dependent_ .NET 6 .exe files, with "win-x64" as target.
