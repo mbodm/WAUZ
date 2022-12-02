@@ -44,7 +44,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - There will also be a command line version of WAUZ. Soon.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
 - If you want to compile by yourself, you can just use i.e. Visual Studio 2022 (any edition) . You need nothing else.
-- The release-binaries are compiled as _self-contained_ and _framework-dependent_ applications, with "win-x64" as target.
+- The release-binaries are compiled with "win-x64" as target, as _self-contained_ and _framework-dependent_.
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
 - The code is using a typical `CancellationToken` timeout pattern.
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
