@@ -27,9 +27,9 @@ So, downloading the addons manually (which is not the time consuming bottleneck 
 
 - 64-bit Windows
 
-There are not any other special requirements. All the release builds are compiled with "win-x64" as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
+There are not any other special requirements. All the release-binaries are compiled with "win-x64" as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
 
-You can choose between _self-contained_ and _framework-dependent_ .NET application builds, when downloading a release. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
+You can choose between _self-contained_ and _framework-dependent_ .NET application builds, when downloading a release. If you want to run the _framework-dependent_ variant you need (as additional requirement) an installed .NET 6 runtime. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
 
 ### Notes
 - WAUZ saves your selected folders automatically in a settings file when you close the app.
@@ -44,7 +44,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - There will be also a command line version of WAUZ. Soon.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
 - If you want to compile by yourself, you can just use i.e. Visual Studio 2022 (any edition) . You need nothing else.
-- The release-binaries are compiled with "win-x64" as target (_self-contained_ and _framework-dependent_).
+- The release-binaries are compiled with "win-x64" as target platform (_self-contained_ and _framework-dependent_).
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
 - The code is using a typical `CancellationToken` timeout approach.
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
