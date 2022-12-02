@@ -18,6 +18,8 @@ It´s sole purpose is to extract zip files into a folder. Nothing else. It´s ju
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
+WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
+
 ### Why it exists
 I developed a download manager for World of Warcraft addons, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of my addon updating needs with ease. But since Curse/Overwolf changed their political stance, alternative download managers (like mine, Ajour, WowUp, or others) no longer works with the https://www.curseforge.com site, or their REST web service. The only option is to use their own addon download manager. Many of us don´t want that, for different reasons.
 
@@ -30,8 +32,6 @@ So, downloading the addons manually (which is not the time consuming bottleneck 
 There are not any other special requirements. All the release builds are compiled with *win-x64* as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
 
 You can choose between self-contained and framework-dependent .NET application builds, when downloading a release. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
-
-WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Notes
 - WAUZ saves your selected folders automatically in a settings file when you close the app.
