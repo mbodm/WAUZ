@@ -63,3 +63,5 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 > - To cleanup any existing/old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
 > - But maybe add additional infos when logging an exception (like the selected folders, etc).
+> - Maybe implement option (checkbox) to remove all existing content from Destination-Folder before unzip?
+> - Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
