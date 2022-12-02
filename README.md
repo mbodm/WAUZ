@@ -11,7 +11,7 @@ It´s used to unzip a bunch of downloaded zip files, residing in some folder, in
 It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier.
 
 ### How it works
-- Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some temporary download folder.
+- Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some folder.
 - Start WAUZ
 - Select the folder which contains the downloaded addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
