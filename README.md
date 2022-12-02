@@ -17,7 +17,7 @@ It´s sole purpose is to extract zip files into a folder. Nothing else. It´s ju
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
-- Hint: WAUZ will never remove, overwrite or touch any other files or folders in the Destination-Folder, besides the files and folders that will be unzipped from the zip files.
+- Hint: 
 - Hint: WAUZ will save your folder settings automatically, when you close the app.
 
 ### Why it exists
@@ -36,11 +36,13 @@ You can choose between self-contained and framework-dependent .NET application b
 WAUZ is just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
 
 ### Notes
-- WAUZ saves your selected folders in a settings file when you close the app.
+- WAUZ saves your selected folders in a settings file automatically when you close the app.
+- WAUZ loads your selected folders from that settings file automatically when you open the app.
 - WAUZ writes a log file if some error happens.
-- You can find both files in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
+- You can find both files (settings and log) in the "C:\Users\YOURUSERNAME\AppData\Local\MBODM" folder.
 - WAUZ uses a timeout of 30 seconds, while unzipping the zip files.
 - WAUZ unzips the files in parallel.
+- WAUZ will never touch (remove, overwrite, etc) any other files or folders in the Destination-Folder, besides the ones coming from the zip files.
 - WAUZ is written in C# and developed with .NET 6, in Visual Studio 2022.
 - WAUZ is using Windows.Forms as GUI framework.
 - I never compiled WAUZ with other tools, like Rider or VS Code. I solely used Visual Studio 2022 Community.
