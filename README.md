@@ -46,7 +46,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - If you want to compile by yourself, you can just use i.e. Visual Studio 2022 (any edition) . You need nothing else.
 - The release-binaries are compiled with "win-x64" as target (_self-contained_ and _framework-dependent_).
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
-- The code is using a typical `CancellationToken` timeout pattern.
+- The code is using a typical `CancellationToken` timeout approach.
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
 - WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool. :grin:
 
