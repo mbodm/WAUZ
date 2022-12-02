@@ -54,9 +54,9 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 
 ---
 > ##### Personal ideas
-- This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere in 1/100 cloud files or OneNote.
-- Add WAUZ command line version (easy, BusinessLogic already exists).
-- Maybe add navigation links to UI, to quickly open the selected folders in Explorer?
+>- This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere in 1/100 cloud files or OneNote.
+>- Add WAUZ command line version (easy, BusinessLogic already exists).
+>- Maybe add navigation links to UI, to quickly open the selected folders in Explorer?
 - Maybe add navigation links to UI, to quickly open the settings/log files or folder?
 - Maybe add a temp folder cleanup check, before unzipping, to cleanup any existing old temp folders, if app was closed too early.
 - Add more log infos? Logfile size? Not meant as: "Log everything". But maybe add additional infos when log an exception (like the selected folders, etc).
