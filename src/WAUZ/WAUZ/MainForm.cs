@@ -20,8 +20,8 @@ namespace WAUZ
             MinimumSize = Size;
             Text = $"WAUZ {GetVersion()}";
 
-            textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Normally some temporary download folder.";
-            textBoxDest.PlaceholderText = "The folder to unzip the addons into. Normally the World of Warcraft AddOns folder.";
+            textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Typically some temporary download folder.";
+            textBoxDest.PlaceholderText = "The folder to unzip the addons into. Typically the World of Warcraft AddOns folder.";
 
             // Using Label control for "links", instead of LinkLabel, for 2 reasons:
             // 1) Actually there is an issue with LinkLabel. It´s text is truncated
