@@ -57,9 +57,19 @@
             }
         }
 
-        public IEnumerable<string> GetZipFiles()
+        public void ValidateSourceFolder()
         {
             ValidateFolder(SourceFolder, "Source-Folder");
+        }
+
+        public void ValidateDestFolder()
+        {
+            ValidateFolder(DestFolder, "Destination-Folder");
+        }
+
+        public IEnumerable<string> GetZipFiles()
+        {
+            ValidateSourceFolder();
 
             var sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(SourceFolder));
 
@@ -77,7 +87,7 @@
         {
             var zipFiles = GetZipFiles();
 
-            ValidateFolder(DestFolder, "Destination-Folder");
+            ValidateDestFolder();
 
             var destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(DestFolder));
 
