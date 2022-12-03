@@ -135,7 +135,7 @@
                 throw new InvalidOperationException($"{folderName} missing.");
             }
 
-            if (!IsValidAbsolutePath(folderValue) || !Directory.Exists(SourceFolder))
+            if (!IsValidAbsolutePath(folderValue) || !Directory.Exists(folderValue))
             {
                 throw new InvalidOperationException($"{folderName} is not a valid path. " +
                     "Given path must be a valid, absolute path, to an existing folder.");

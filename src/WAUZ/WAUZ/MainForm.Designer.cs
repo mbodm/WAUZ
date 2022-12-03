@@ -38,6 +38,8 @@
             this.labelSource = new System.Windows.Forms.Label();
             this.labelDest = new System.Windows.Forms.Label();
             this.labelProgressBar = new System.Windows.Forms.Label();
+            this.labelSourceLink = new System.Windows.Forms.Label();
+            this.labelDestLink = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonSource
@@ -57,7 +59,7 @@
             this.buttonDest.Location = new System.Drawing.Point(497, 103);
             this.buttonDest.Name = "buttonDest";
             this.buttonDest.Size = new System.Drawing.Size(75, 25);
-            this.buttonDest.TabIndex = 4;
+            this.buttonDest.TabIndex = 5;
             this.buttonDest.Text = "Search...";
             this.buttonDest.UseVisualStyleBackColor = true;
             this.buttonDest.Click += new System.EventHandler(this.ButtonDest_Click);
@@ -78,7 +80,7 @@
             this.textBoxDest.Location = new System.Drawing.Point(12, 134);
             this.textBoxDest.Name = "textBoxDest";
             this.textBoxDest.Size = new System.Drawing.Size(560, 23);
-            this.textBoxDest.TabIndex = 5;
+            this.textBoxDest.TabIndex = 6;
             // 
             // progressBar
             // 
@@ -87,7 +89,7 @@
             this.progressBar.Location = new System.Drawing.Point(12, 276);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(560, 23);
-            this.progressBar.TabIndex = 8;
+            this.progressBar.TabIndex = 10;
             // 
             // buttonUnzip
             // 
@@ -95,7 +97,7 @@
             this.buttonUnzip.Location = new System.Drawing.Point(497, 245);
             this.buttonUnzip.Name = "buttonUnzip";
             this.buttonUnzip.Size = new System.Drawing.Size(75, 25);
-            this.buttonUnzip.TabIndex = 7;
+            this.buttonUnzip.TabIndex = 9;
             this.buttonUnzip.Text = "&Unzip";
             this.buttonUnzip.UseVisualStyleBackColor = true;
             this.buttonUnzip.Click += new System.EventHandler(this.ButtonUnzip_Click);
@@ -117,7 +119,7 @@
             this.labelDest.Margin = new System.Windows.Forms.Padding(0);
             this.labelDest.Name = "labelDest";
             this.labelDest.Size = new System.Drawing.Size(108, 15);
-            this.labelDest.TabIndex = 3;
+            this.labelDest.TabIndex = 4;
             this.labelDest.Text = "Destination-Folder:";
             // 
             // labelProgressBar
@@ -128,14 +130,38 @@
             this.labelProgressBar.Margin = new System.Windows.Forms.Padding(0);
             this.labelProgressBar.Name = "labelProgressBar";
             this.labelProgressBar.Size = new System.Drawing.Size(400, 15);
-            this.labelProgressBar.TabIndex = 6;
+            this.labelProgressBar.TabIndex = 8;
             this.labelProgressBar.Text = "Progress:";
+            // 
+            // labelSourceLink
+            // 
+            this.labelSourceLink.AutoSize = true;
+            this.labelSourceLink.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelSourceLink.Location = new System.Drawing.Point(9, 69);
+            this.labelSourceLink.Name = "labelSourceLink";
+            this.labelSourceLink.Size = new System.Drawing.Size(129, 15);
+            this.labelSourceLink.TabIndex = 3;
+            this.labelSourceLink.Text = "Open folder in Explorer";
+            this.labelSourceLink.Click += new System.EventHandler(this.LabelSourceLink_Click);
+            // 
+            // labelDestLink
+            // 
+            this.labelDestLink.AutoSize = true;
+            this.labelDestLink.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelDestLink.Location = new System.Drawing.Point(9, 160);
+            this.labelDestLink.Name = "labelDestLink";
+            this.labelDestLink.Size = new System.Drawing.Size(129, 15);
+            this.labelDestLink.TabIndex = 7;
+            this.labelDestLink.Text = "Open folder in Explorer";
+            this.labelDestLink.Click += new System.EventHandler(this.LabelDestLink_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 311);
+            this.Controls.Add(this.labelDestLink);
+            this.Controls.Add(this.labelSourceLink);
             this.Controls.Add(this.labelProgressBar);
             this.Controls.Add(this.labelDest);
             this.Controls.Add(this.labelSource);
@@ -168,5 +194,7 @@
         private Label labelSource;
         private Label labelDest;
         private Label labelProgressBar;
+        private Label labelSourceLink;
+        private Label labelDestLink;
     }
 }

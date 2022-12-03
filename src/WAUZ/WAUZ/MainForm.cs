@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using WAUZ.BL;
 
 namespace WAUZ
@@ -21,6 +22,20 @@ namespace WAUZ
 
             textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Normally some temporary download folder.";
             textBoxDest.PlaceholderText = "The folder to unzip the addons into. Normally the World of Warcraft AddOns folder.";
+
+            // Using Label control for "links", instead of LinkLabel, for 2 reasons:
+            // 1) Actually there is an issue with LinkLabel. It´s text is truncated
+            // if it´s disabled. See https://github.com/dotnet/winforms/issues/7341
+            // 2) First workaround was: Changing the color and click handler of the
+            // LinkLabel control to "fake" the disabled state of the LinkLabel. But
+            // this was even more complicated than just alienate a normal Label for
+            // my needs. And since i do not benefit from the advantages a LinkLabel
+            // has, in contrast to a normal Label, i use colored normal Labels here.
+
+            var defaultLinkLabelColor = new LinkLabel().LinkColor;
+
+            labelSourceLink.ForeColor = defaultLinkLabelColor;
+            labelDestLink.ForeColor = defaultLinkLabelColor;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -51,6 +66,20 @@ namespace WAUZ
             }
         }
 
+        private void LabelSourceLink_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                businessLogic.SourceFolder = textBoxSource.Text;
+                businessLogic.ValidateSourceFolder();
+                Process.Start("explorer", businessLogic.SourceFolder);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ShowError(ex.Message);
+            }
+        }
+
         private void ButtonDest_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(textBoxDest.Text))
@@ -69,6 +98,20 @@ namespace WAUZ
                 {
                     SelectFolder(textBoxDest, GetDesktopFolder());
                 }
+            }
+        }
+
+        private void LabelDestLink_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                businessLogic.DestFolder = textBoxDest.Text;
+                businessLogic.ValidateDestFolder();
+                Process.Start("explorer", businessLogic.DestFolder);
+            }
+            catch (InvalidOperationException ex)
+            {
+                ShowError(ex.Message);
             }
         }
 
