@@ -71,7 +71,7 @@
         {
             ValidateSourceFolder();
 
-            var sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(SourceFolder));
+            var sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(SourceFolder)); // Just to make sure
 
             var zipFiles = Directory.GetFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
 
@@ -89,7 +89,9 @@
 
             ValidateDestFolder();
 
-            var destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(DestFolder));
+            var destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(DestFolder));  // Just to make sure
+
+            CleanUpTempFolder();
 
             var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
@@ -128,7 +130,7 @@
             }
         }
 
-        private void ValidateFolder(string folderValue, string folderName)
+        private static void ValidateFolder(string folderValue, string folderName)
         {
             if (string.IsNullOrWhiteSpace(folderValue))
             {
@@ -203,6 +205,21 @@
             }
 
             return false;
+        }
+
+        private static void CleanUpTempFolder()
+        {
+            var userTempFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.GetTempPath()));
+
+            var tempFolders = Directory.GetDirectories(userTempFolder, "MBODM.WAUZ.*.tmp", SearchOption.TopDirectoryOnly);
+
+            foreach (var tempFolder in tempFolders)
+            {
+                if (Directory.Exists(tempFolder))
+                {
+                    Directory.Delete(tempFolder, true);
+                }
+            }
         }
     }
 }
