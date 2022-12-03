@@ -117,20 +117,31 @@ namespace WAUZ
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
+            businessLogic.SourceFolder = textBoxSource.Text;
+            businessLogic.DestFolder = textBoxDest.Text;
+
             try
             {
-                SetControls(false);
+                businessLogic.ValidateSourceFolder();
+                businessLogic.ValidateDestFolder();
+            }
+            catch (InvalidOperationException ex)
+            {
+                ShowError(ex.Message);
+                return;
+            }
 
-                labelProgressBar.Enabled = true;
-                progressBar.Enabled = true;
+            SetControls(false);
+
+            labelProgressBar.Enabled = true;
+            progressBar.Enabled = true;
+            progressBar.Value = progressBar.Minimum;
+
+            try
+            {
+                progressBar.Maximum = businessLogic.GetZipFiles().Count();
 
                 cancellationTokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 30));
-
-                businessLogic.SourceFolder = textBoxSource.Text;
-                businessLogic.DestFolder = textBoxDest.Text;
-
-                progressBar.Maximum = businessLogic.GetZipFiles().Count();
-                progressBar.Value = progressBar.Minimum;
 
                 await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
                 {
