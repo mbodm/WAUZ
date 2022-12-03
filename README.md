@@ -67,3 +67,4 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 > - Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
 > - Missing or wrong selected folders lead to "Error occurred" UI status. Keep this behaivour?
 > - Maybe add a ListView with CheckBoxes to select zip files, before unzipping?
+> :heavy_check_mark: Change TextBox placeholder text.
