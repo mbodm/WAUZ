@@ -68,6 +68,8 @@
             // 
             this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxSource.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.textBoxSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.textBoxSource.Location = new System.Drawing.Point(12, 43);
             this.textBoxSource.Name = "textBoxSource";
             this.textBoxSource.Size = new System.Drawing.Size(560, 23);
@@ -77,6 +79,8 @@
             // 
             this.textBoxDest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.textBoxDest.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.textBoxDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.textBoxDest.Location = new System.Drawing.Point(12, 134);
             this.textBoxDest.Name = "textBoxDest";
             this.textBoxDest.Size = new System.Drawing.Size(560, 23);
@@ -159,6 +163,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(584, 311);
             this.Controls.Add(this.labelDestLink);
             this.Controls.Add(this.labelSourceLink);

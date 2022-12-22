@@ -68,6 +68,9 @@ namespace WAUZ
 
         private void LabelSourceLink_Click(object sender, EventArgs e)
         {
+            if (e is not MouseEventArgs mouseEventArgs) return;
+            if (mouseEventArgs.Button != MouseButtons.Left) return;
+
             try
             {
                 businessLogic.SourceFolder = textBoxSource.Text;
@@ -103,6 +106,9 @@ namespace WAUZ
 
         private void LabelDestLink_Click(object sender, EventArgs e)
         {
+            if (e is not MouseEventArgs mouseEventArgs) return;
+            if (mouseEventArgs.Button != MouseButtons.Left) return;
+
             try
             {
                 businessLogic.DestFolder = textBoxDest.Text;
