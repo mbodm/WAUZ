@@ -20,23 +20,9 @@ It´s just a typical ".exe file" Windows application. Just download the newest r
 
 :warning:
 
-If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-the-new-release-version-103-or-higher) about a possible "data loss" inside the selected destination folder!
+If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) about a possible "data loss" inside the selected destination folder!
 
 :warning:
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Why it exists
 I developed a download manager for World of Warcraft addons, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of my addon updating needs with ease. But since Curse/Overwolf changed their political stance, alternative download managers (like mine, Ajour, WowUp, or others) no longer works with the https://www.curseforge.com site, or their REST web service. The only option is to use their own addon download manager. Many of us don´t want that, for different reasons.
@@ -71,7 +57,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
 - WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool (for me and some friends). :grin:
 
-### Important notes when using the new release version 1.0.3 or higher
+### Important notes when using release version 1.0.3 or higher
 
 The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit more in detail here, since this may be important for the user, when it comes down to "data loss" in the destination folder.
 
