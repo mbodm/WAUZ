@@ -71,7 +71,9 @@ How it worked before version 1.0.3 was released?
 
 In the past WAUZ first unzipped an addon zip file into a temp folder (a folder with some random generated name, under the user´s temp folder, in "C:\Users\XXX\AppData\Local\Temp"), specific to that addon unzip file. Then WAUZ inspected the name of every file and folder (let´s call it "source" here) inside that temp folder and checked if the destination folder also contains a file or folder with that name (let´s call it "target" here). If existing, WAUZ deleted specifically that "target" inside the destination folder (this is the important part here). And then WAUZ moved the "source" to the destination folder. WAUZ repeated exactly this approach for every single addon zip file. The result of this was: _"WAUZ will not touch any other files or folders in Destination-Folder, besides the ones coming from the zip file."_, as mentioned in the notes.
 
+Why this has changed?
 
+While the above approach has the big benefit of _"not touching any other files or folders in the selected destination folder, besides the ones coming from the zip file"_, when you look at it from a data security point of view, this also has a downside: Some addons (and their content like files and folders) change over time. And since only that content is deleted in the destination folder, that is also included in an actual addon zip file, the leftover data junk and clutter gets more and bigger over time. This means: Exactly the same thing that helps with "not deleting any additional data" is also the reason for data junk and clutter. Since there is no way to get "the best of both worlds" i had to decide for one other. And since the typical addons destination folder is just some typical "binaries" folder and typically not contains any data to backup, i decided to go with the "clear destination folder completely, before unzipping the addons into it" approach. 
 
 
 
