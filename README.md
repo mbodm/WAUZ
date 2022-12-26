@@ -8,7 +8,7 @@ It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraf
 
 It´s used to unzip a bunch of downloaded zip files, residing in some folder, into another folder (in this case the zip files are addons for the popular [World of Warcraft](https://worldofwarcraft.com) MMORPG game).
 
-It´s just a typical ".exe" file Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that. It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. 
+It´s just a typical ".exe file" Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that. It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. 
 
 ### How it works
 - Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some folder.
