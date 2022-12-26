@@ -68,7 +68,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - The code is using the TAP pattern of .NET, including concurrency concepts like `async/await` and `IProgress<>`.
 - The code is using a typical `CancellationToken` timeout approach.
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
-- WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool for myself and friends. :grin:
+- WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool for me and my friends. :grin:
 
 ### Important notes when using the new release version 1.0.3 or higher
 
