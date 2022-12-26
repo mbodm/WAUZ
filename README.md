@@ -18,7 +18,9 @@ It´s just a typical ".exe" file Windows application. Just download the newest r
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort, and you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
-:warning: Important notes when using the new release version 1.0.3 or higher! :warning:
+:warning:
+Important notes when using the new release version 1.0.3 or higher:
+:warning:
 
 The logic and filesystem behaviour, WAUZ is based on, was completely changed in the release 1.0.3 version. Therefore i need to say a few words about this here.
 
