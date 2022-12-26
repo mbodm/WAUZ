@@ -1,16 +1,19 @@
-﻿namespace WAUZ.BL
+﻿using System.Diagnostics;
+using System.IO.Compression;
+
+namespace WAUZ.BL
 {
     public sealed class BusinessLogic : IBusinessLogic
     {
-        private readonly IAppSettings appSettings;
         private readonly IAppLogging appLogging;
-        private readonly IZipHelper zipHelper;
+        private readonly IAppSettings appSettings;
+        private readonly IFileSystemHelper fileSystemHelper;
 
-        public BusinessLogic(IAppSettings appSettings, IAppLogging appLogging, IZipHelper zipHelper)
+        public BusinessLogic(IAppLogging appLogging, IAppSettings appSettings, IFileSystemHelper fileSystemHelper)
         {
-            this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
             this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
-            this.zipHelper = zipHelper ?? throw new ArgumentNullException(nameof(zipHelper));
+            this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            this.fileSystemHelper = fileSystemHelper ?? throw new ArgumentNullException(nameof(fileSystemHelper));
         }
 
         public string SourceFolder { get; set; } = string.Empty;
@@ -57,23 +60,15 @@
             }
         }
 
-        public void ValidateSourceFolder()
-        {
-            ValidateFolder(SourceFolder, "Source-Folder");
-        }
+        public string ValidateSourceFolder() => ValidateFolder(SourceFolder, "Source-Folder");
 
-        public void ValidateDestFolder()
-        {
-            ValidateFolder(DestFolder, "Destination-Folder");
-        }
+        public string ValidateDestFolder() => ValidateFolder(DestFolder, "Destination-Folder");
 
         public IEnumerable<string> GetZipFiles()
         {
-            ValidateSourceFolder();
+            var sourceFolder = ValidateSourceFolder();
 
-            var sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(SourceFolder)); // Just to make sure
-
-            var zipFiles = Directory.GetFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
+            var zipFiles = Directory.EnumerateFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
 
             if (!zipFiles.Any())
             {
@@ -83,15 +78,15 @@
             return zipFiles;
         }
 
-        public async Task UnzipAsync(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
+        public async Task<long> UnzipAsync(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
             var zipFiles = GetZipFiles();
 
-            ValidateDestFolder();
+            var destFolder = ValidateDestFolder();
 
-            var destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(DestFolder));  // Just to make sure
+            var stopwatch = Stopwatch.StartNew();
 
-            CleanUpTempFolder();
+            await fileSystemHelper.DeleteFolderContentAsync(DestFolder).ConfigureAwait(false);
 
             var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
@@ -101,7 +96,7 @@
 
                 try
                 {
-                    zipHelper.UnzipFile(zipFile, destFolder);
+                    ZipFile.ExtractToDirectory(zipFile, destFolder);
                 }
                 catch (Exception e)
                 {
@@ -128,16 +123,20 @@
 
                 throw new InvalidOperationException("An error occurred while extracting the zip files (see log file for details).");
             }
+
+            stopwatch.Stop();
+
+            return stopwatch.ElapsedMilliseconds;
         }
 
-        private static void ValidateFolder(string folderValue, string folderName)
+        private string ValidateFolder(string folderValue, string folderName)
         {
             if (string.IsNullOrWhiteSpace(folderValue))
             {
                 throw new InvalidOperationException($"{folderName} missing.");
             }
 
-            if (!IsValidAbsolutePath(folderValue) || !Directory.Exists(folderValue))
+            if (!fileSystemHelper.IsValidAbsolutePath(folderValue) || !Directory.Exists(folderValue))
             {
                 throw new InvalidOperationException($"{folderName} is not a valid path. " +
                     "Given path must be a valid, absolute path, to an existing folder.");
@@ -156,70 +155,8 @@
                 throw new InvalidOperationException($"{folderName} path is too long. " +
                     $"Make sure given path is smaller than {maxLength} characters.");
             }
-        }
 
-        private static bool IsValidAbsolutePath(string path)
-        {
-            try
-            {
-                if (!string.IsNullOrWhiteSpace(path))
-                {
-                    var parentFolder = Path.GetDirectoryName(path);
-
-                    if (!string.IsNullOrEmpty(parentFolder))
-                    {
-                        if (!Path.GetInvalidPathChars().Any(invalidPathChar => parentFolder.Contains(invalidPathChar)))
-                        {
-                            var fileOrFolderName = Path.GetFileName(path);
-
-                            if (!string.IsNullOrEmpty(fileOrFolderName))
-                            {
-                                if (!Path.GetInvalidFileNameChars().Any(invalidFileNameChar => fileOrFolderName.Contains(invalidFileNameChar)))
-                                {
-                                    if (Path.IsPathFullyQualified(path))
-                                    {
-                                        if (Path.IsPathRooted(path))
-                                        {
-                                            var root = Path.GetPathRoot(path);
-
-                                            if (!string.IsNullOrEmpty(root))
-                                            {
-                                                var drives = DriveInfo.GetDrives().Select(drive => drive.Name);
-
-                                                if (drives.Contains(root))
-                                                {
-                                                    return true;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                // Hiding exceptions is intended design for this method.
-            }
-
-            return false;
-        }
-
-        private static void CleanUpTempFolder()
-        {
-            var userTempFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(Path.GetTempPath()));
-
-            var tempFolders = Directory.GetDirectories(userTempFolder, "MBODM.WAUZ.*.tmp", SearchOption.TopDirectoryOnly);
-
-            foreach (var tempFolder in tempFolders)
-            {
-                if (Directory.Exists(tempFolder))
-                {
-                    Directory.Delete(tempFolder, true);
-                }
-            }
+            return Path.TrimEndingDirectorySeparator(Path.GetFullPath(folderValue));
         }
     }
 }

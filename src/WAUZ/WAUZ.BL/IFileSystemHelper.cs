@@ -2,6 +2,7 @@
 {
     public interface IFileSystemHelper
     {
-        void MoveFolderContent(string sourceFolder, string destFolder);
+        bool IsValidAbsolutePath(string path);
+        Task DeleteFolderContentAsync(string folder);
     }
 }

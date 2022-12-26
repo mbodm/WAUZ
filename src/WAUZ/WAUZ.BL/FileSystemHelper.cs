@@ -2,93 +2,117 @@
 {
     public sealed class FileSystemHelper : IFileSystemHelper
     {
-        public void MoveFolderContent(string sourceFolder, string destFolder)
+        public bool IsValidAbsolutePath(string path)
         {
-            if (string.IsNullOrWhiteSpace(sourceFolder))
+            if (string.IsNullOrWhiteSpace(path))
             {
-                throw new ArgumentException($"'{nameof(sourceFolder)}' cannot be null or whitespace.", nameof(sourceFolder));
+                throw new ArgumentException($"'{nameof(path)}' cannot be null or whitespace.", nameof(path));
             }
 
-            if (string.IsNullOrWhiteSpace(destFolder))
+            try
             {
-                throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
-            }
-
-            if (!Directory.Exists(sourceFolder))
-            {
-                throw new InvalidOperationException($"'{nameof(sourceFolder)}' has to be an existing folder.");
-            }
-
-            if (!Directory.Exists(destFolder))
-            {
-                throw new InvalidOperationException($"'{nameof(destFolder)}' has to be an existing folder.");
-            }
-
-            // Create tuples, where every tuple represents a source path
-            // and a corresponding destination path, to a file or folder.
-
-            var tuples = CreateTuples(sourceFolder, destFolder);
-
-            // Move all files and directories inside of source folder, into dest folder.
-            // If dest folder already contains some of those files or directories, they
-            // are removed from dest folder first, before running proper move operation.
-
-            foreach (var (source, dest) in tuples)
-            {
-                if (File.Exists(source) && !HasDirectoryAttribute(source))
+                if (!string.IsNullOrWhiteSpace(path))
                 {
-                    if (File.Exists(dest))
+                    var parentFolder = Path.GetDirectoryName(path);
+
+                    if (!string.IsNullOrEmpty(parentFolder))
                     {
-                        File.Delete(dest);
+                        if (!Path.GetInvalidPathChars().Any(invalidPathChar => parentFolder.Contains(invalidPathChar)))
+                        {
+                            var fileOrFolderName = Path.GetFileName(path);
+
+                            if (!string.IsNullOrEmpty(fileOrFolderName))
+                            {
+                                if (!Path.GetInvalidFileNameChars().Any(invalidFileNameChar => fileOrFolderName.Contains(invalidFileNameChar)))
+                                {
+                                    if (Path.IsPathFullyQualified(path))
+                                    {
+                                        if (Path.IsPathRooted(path))
+                                        {
+                                            var root = Path.GetPathRoot(path);
+
+                                            if (!string.IsNullOrEmpty(root))
+                                            {
+                                                var drives = DriveInfo.GetDrives().Select(drive => drive.Name);
+
+                                                if (drives.Contains(root))
+                                                {
+                                                    return true;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-
-                    File.Move(source, dest);
-
-                    continue;
                 }
-
-                if (Directory.Exists(source) && HasDirectoryAttribute(source))
-                {
-                    if (Directory.Exists(dest))
-                    {
-                        Directory.Delete(dest, true);
-                    }
-
-                    Directory.Move(source, dest);
-
-                    continue;
-                }
-
-                throw new InvalidOperationException("The tuples contain a source path, which seems to be wether a file, nor a folder.");
             }
+            catch
+            {
+                // Hiding exceptions is intended design for this method.
+            }
+
+            return false;
         }
 
-        private static IEnumerable<(string Source, string Dest)> CreateTuples(string sourceFolder, string destFolder)
+        public async Task DeleteFolderContentAsync(string folder)
         {
-            sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceFolder));
-
-            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder));
-
-            return Directory.EnumerateFileSystemEntries(sourceFolder).Select(sourceEntry =>
+            if (string.IsNullOrWhiteSpace(folder))
             {
-                var source = sourceEntry; // <-- If method input is absolute, this path is also absolute.
+                throw new ArgumentException($"'{nameof(folder)}' cannot be null or whitespace.", nameof(folder));
+            }
 
-                var fileOrFolderName = Path.GetFileName(source); // <-- Is typically used for both, file names and folder names.
+            // Doing no further input validation here (i.e. if path is an existing folder). It
+            // seems fine to me if below code will do that job and maybe fails gracefully then,
+            // since such checks will be done by the logic anyway before this method is called.
 
-                if (string.IsNullOrEmpty(fileOrFolderName))
+            var directoryInfo = new DirectoryInfo(folder);
+
+            // This async approach is around 3 times faster than the sync approach, after some
+            // measurements. Looks like a modern SSD/OS seems to be rather concurrent-friendly.
+
+            var tasks = directoryInfo.EnumerateFileSystemInfos().Select(fsi => Task.Run(() =>
+            {
+                // Need to differ here, since FileSystemInfo.Delete() only works with empty
+                // folders. And using this early-exit approach to ignore the rare case when
+                // a FileSystemInfo object is wether a file nor a folder. Just to make sure.
+
+                if (fsi is DirectoryInfo di)
                 {
-                    throw new InvalidOperationException("Could not determine the name of some file or folder, while creating the tuples.");
+                    di.Delete(true);
+
+                    return;
                 }
 
-                var dest = Path.TrimEndingDirectorySeparator(Path.Combine(destFolder, fileOrFolderName));
+                if (fsi is FileInfo fi)
+                {
+                    fi.Delete();
 
-                return (source, dest);
-            });
-        }
+                    return;
+                }
+            }));
 
-        private static bool HasDirectoryAttribute(string path)
-        {
-            return (File.GetAttributes(path) & FileAttributes.Directory) == FileAttributes.Directory;
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+
+            // Wait for deletion, as described at:
+            // https://stackoverflow.com/questions/34981143/is-directory-delete-create-synchronous
+
+            var counter = 0;
+
+            while (directoryInfo.EnumerateFileSystemInfos().Any())
+            {
+                await Task.Delay(50).ConfigureAwait(false);
+
+                // Throw exception after ~500ms to prevent blocking forever.
+
+                counter++;
+
+                if (counter > 10)
+                {
+                    throw new InvalidOperationException("Could not delete folder content.");
+                }
+            }
         }
     }
 }

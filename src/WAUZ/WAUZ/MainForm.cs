@@ -7,13 +7,13 @@ namespace WAUZ
     {
         private CancellationTokenSource cancellationTokenSource = new();
 
-        private readonly IBusinessLogic businessLogic;
         private readonly IAppLogging appLogging;
+        private readonly IBusinessLogic businessLogic;
 
-        public MainForm(IBusinessLogic businessLogic, IAppLogging appLogging)
+        public MainForm(IAppLogging appLogging, IBusinessLogic businessLogic)
         {
-            this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
             this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
+            this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
 
             InitializeComponent();
 
@@ -44,6 +44,25 @@ namespace WAUZ
 
             textBoxSource.Text = businessLogic.SourceFolder;
             textBoxDest.Text = businessLogic.DestFolder;
+        }
+
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(textBoxSource.Text) && buttonSource.CanFocus)
+            {
+                buttonSource.Focus();
+            }
+            else if (string.IsNullOrEmpty(textBoxDest.Text) && buttonDest.CanFocus)
+            {
+                buttonDest.Focus();
+            }
+            else
+            {
+                if (buttonUnzip.CanFocus)
+                {
+                    buttonUnzip.Focus();
+                }
+            }
         }
 
         private void MainForm_FormClosed(object sender, FormClosedEventArgs e)
@@ -149,7 +168,7 @@ namespace WAUZ
 
                 cancellationTokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 30));
 
-                await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
+                var ms = await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
                 {
                     progressBar.Value++;
                     var zipFileName = Path.GetFileName(progressData.ZipFile);
@@ -166,7 +185,9 @@ namespace WAUZ
 
                 await Task.Delay(1500);
 
-                labelProgressBar.Text = $"Progress: {progressBar.Value} addons successfully unzipped.";
+                var duration = (double)(ms + 1500) / 1000;
+
+                labelProgressBar.Text = $"Successfully unzipped {progressBar.Value} addons after {duration:0.00} seconds.";
             }
             catch (Exception ex)
             {
@@ -187,7 +208,17 @@ namespace WAUZ
             finally
             {
                 SetControls(true);
+
+                if (buttonClose.CanFocus)
+                {
+                    buttonClose.Focus();
+                }
             }
+        }
+
+        private void ButtonClose_Click(object sender, EventArgs e)
+        {
+            Close();
         }
 
         private static string GetVersion()

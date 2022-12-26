@@ -8,10 +8,10 @@
         void LoadSettings();
         void SaveSettings();
 
-        void ValidateSourceFolder();
-        void ValidateDestFolder();
+        string ValidateSourceFolder();
+        string ValidateDestFolder();
 
         IEnumerable<string> GetZipFiles();
-        Task UnzipAsync(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
+        Task<long> UnzipAsync(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
     }
 }
