@@ -30,9 +30,9 @@ WAUZ now always clears the selected destination folder (removing all files and f
 
 The long (technical background) version:
 
-How it worked before 1.0.3 release version?
+How it worked before version 1.0.3 was released?
 
-In the past WAUZ first unzipped an addon zip file into its own specific temp folder (a random-named foler under the user´s temp folder, in "C:\Users\XXX\AppData\Local\Temp"). Then WAUZ inspected the name of every file and folder inside the temp folder and checked if the destination folder already contains a file or folder with that name. If so, WAUZ deleted specifically that file or folder from the destination folder.
+In the past WAUZ first unzipped an addon zip file into its own specific temp folder (a folder with some random generated name, under the user´s temp folder, in "C:\Users\XXX\AppData\Local\Temp"). Then WAUZ inspected the name of every file and folder (let´s call it "source" here) inside that temp folder and checked if the destination folder also contains a file or folder with that name (let´s call it "target" here). If so, WAUZ deleted specifically that "target" inside the destination folder (this is the important part here). And then WAUZ moved the "source" to the destination folder.
 
 
 
