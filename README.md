@@ -18,21 +18,7 @@ It´s just a typical ".exe" file Windows application. Just download the newest r
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
-:warning:
-
-__Important notes, when using the new release version 1.0.3 or higher:__
-
-The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit in detail here, since this may be important for the user, when it comes down to "data loss" topics.
-
-The short version:
-
-WAUZ now always clears the selected destination folder (removing all files and folders inside it), before the unzip process even starts. This means: If in example a zip file is corrupted and WAUZ stops, you already lost all of your old/existing addons inside the destination folder. In 99% of all cases this should be no problem, because the destination folder is normally just a "working folder" for binary stuff, solely used for the addon "applications". This applies also and foremost to the "World of Warcraft AddOns" folder (when used as destination folder in WAUZ). Normally no sensible data (personal data, config files, or something like that) should reside there. Even the addons themselfes store their config files in another location (another specific folder inside the World of Warcraft installation folder). But: If you stored anything important in the selected destination folder, for whatever reason, make sure you create a backup before pressing the "Unzip" button! If you want to know more about "why this has changed and how it worked before", just continue reading.
-
-The long (technical background) version:
-
-How it worked before version 1.0.3 was released?
-
-In the past WAUZ first unzipped an addon zip file into its own specific temp folder (a folder with some random generated name, under the user´s temp folder, in "C:\Users\XXX\AppData\Local\Temp"). Then WAUZ inspected the name of every file and folder (let´s call it "source" here) inside that temp folder and checked if the destination folder also contains a file or folder with that name (let´s call it "target" here). If so, WAUZ deleted specifically that "target" inside the destination folder (this is the important part here). And then WAUZ moved the "source" to the destination folder.
+:warning: If you are using release version 1.0.3 or higher, please also read this important notes! :warning:
 
 
 
@@ -50,15 +36,10 @@ In the past WAUZ first unzipped an addon zip file into its own specific temp fol
 
 
 
-There are a few ways, the unzip process can be handled. Let´s quickly have a look at them:
-
-- Approach 1:
-Remove all content inside the destination folder (the old/existing addon files and folders) first, before even start the unzip process. Then unzip all addons directly into the destination folder. Pros: Easy, straight and fast. Cons: 
 
 
 
-There are a few ways, the unzip process can be handled:
-- Approach 1: Remove all content inside the destination folder (the old, already existing addon files and folders) first, before even start unzipping the new addons into this destination folder.
+
 
 :warning:
 
@@ -93,6 +74,28 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 - The code is using a typical `CancellationToken` timeout approach.
 - WAUZ is under MIT license. Feel free to use the source and do whatever you want. I assume no liability.
 - WAUZ just exists, because i am lazy and made my life a bit easier, by writing this tool. :grin:
+
+### Important notes when using the new release version 1.0.3 or higher
+
+The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit in detail here, since this may be important for the user, when it comes down to "data loss" topics.
+
+The short version:
+
+WAUZ now always clears the selected destination folder (removing all files and folders inside it), before the unzip process even starts. This means: If in example a zip file is corrupted and WAUZ stops, you already lost all of your old/existing addons inside the destination folder. In 99% of all cases this should be no problem, because the destination folder is normally just a "working folder" for binary stuff, solely used for the addon "applications". This applies also and foremost to the "World of Warcraft AddOns" folder (when used as destination folder in WAUZ). Normally no sensible data (personal data, config files, or something like that) should reside there. Even the addons themselfes store their config files in another location (another specific folder inside the World of Warcraft installation folder). But: If you stored anything important in the selected destination folder, for whatever reason, make sure you create a backup before pressing the "Unzip" button! If you want to know more about "why this has changed and how it worked before", just continue reading.
+
+The long (technical background) version:
+
+How it worked before version 1.0.3 was released?
+
+In the past WAUZ first unzipped an addon zip file into its own specific temp folder (a folder with some random generated name, under the user´s temp folder, in "C:\Users\XXX\AppData\Local\Temp"). Then WAUZ inspected the name of every file and folder (let´s call it "source" here) inside that temp folder and checked if the destination folder also contains a file or folder with that name (let´s call it "target" here). If so, WAUZ deleted specifically that "target" inside the destination folder (this is the important part here). And then WAUZ moved the "source" to the destination folder.
+
+
+
+There are a few ways, the unzip process can be handled. Let´s quickly have a look at them:
+
+- Approach 1:
+Remove all content inside the destination folder (the old/existing addon files and folders) first, before even start the unzip process. Then unzip all addons directly into the destination folder. Pros: Easy, straight and fast.
+
 
 #### Have fun.
 
