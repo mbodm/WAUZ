@@ -22,7 +22,7 @@ It´s just a typical ".exe" file Windows application. Just download the newest r
 
 __Important notes, when using the new release version 1.0.3 or higher:__
 
-The way WAUZ works and doing its unzip job /under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit in detail here, since this may be important for the user, when it comes down to "data loss" topics.
+The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit in detail here, since this may be important for the user, when it comes down to "data loss" topics.
 
 The short version:
 
