@@ -24,7 +24,7 @@ __Important notes, when using the new release version 1.0.3 or higher:__
 
 The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit in detail here, since this may be important for the user, when it comes down to "data loss" topics.
 
-TThe short version:
+The short version:
 
 WAUZ now always clears the selected destination folder (removing all files and folders inside it), before the unzip process even starts. This means: If in example a zip file is corrupted and WAUZ stops, you already lost all of your old/existing addons inside the destination folder. In 99% of all cases this should be no problem, because the destination folder is normally just a "working folder" for binary stuff, solely used for the addon "applications". This applies also and foremost to the "World of Warcraft AddOns" folder (when used as destination folder in WAUZ). Normally no sensible data (personal data, config files, or something like that) should reside there. Even the addons themselfes store their config files in another location (another specific folder inside the World of Warcraft installation folder). But: If you stored anything important in the selected destination folder, for whatever reason, make sure you create a backup before pressing the "Unzip" button! If you want to know more about "why this has changed and how it worked before", just continue reading.
 
