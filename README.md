@@ -26,7 +26,7 @@ The way WAUZ works and doing its unzip job has completely changed in release ver
 
 The short version:
 
-WAUZ will now always clear the destination folder (remove all files and folders inside it), before WAUZ even starts the unzip process. This means, if in example a zip file is corrupted and WAUZ stops, you already lost all of your old addons, inside the destination folder. But since the destination folder normally is just a "binary data working folder", solely used for the addon 
+WAUZ now always clears the destination folder (remove all files and folders inside it), before WAUZ even starts the unzip process. This means, if in example a zip file is corrupted and WAUZ stops, you already lost all of your old addons, inside the destination folder. But since the destination folder normally is just a "binary data working folder", solely used for the addon 
 
 
 
