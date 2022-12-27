@@ -63,6 +63,8 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 
 The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit more in detail here.
 
+At the moment there is still some ongoing development and descission finding in progress. Therefore i quickly out-commented all the text, that already existed here. More to come. Stay tuned!
+
 <!--
 since this may be important for the user, when it comes down to "data loss" inside the selected destination folder.
 
