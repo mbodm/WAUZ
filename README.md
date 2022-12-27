@@ -75,12 +75,16 @@ Why this has changed?
 
 While the above approach has the big benefit of _"not touching any other files or folders in the selected destination folder, besides the ones coming from the zip file"_, when you look at it from a data security point of view, this also has a downside: Some addons (and their content, the files/folders) change over time. And since the only files/folders that are deleted in the destination folder, are the files/folders (filenames/foldernames) that are also included in an actual addon zip file, the leftover data junk and clutter (of older addon files/folders) gets more and bigger over time. This means: Exactly the same thing that helps with "not deleting any additional data" is also the reason for "leftover data junk and clutter". Since there is no way to get "the best of both worlds" i had to decide for one or the other. And since the typical addons destination folder is just some "binaries" folder and typically not contains any data to backup, i decided to stick with the "clear destination folder completely, before unzipping the addons into it" approach.
 
+More technical background and thoughts
 
-
-There are a few ways, the unzip process can be handled. Let´s quickly have a look at them:
+There are a few ways, the unzip process can be handled, in general. Let´s quickly have a look at them:
 
 - Approach 1:
-Remove all content inside the destination folder (the old/existing addon files and folders) first, before even start the unzip process. Then unzip all addons directly into the destination folder. Pros: Easy, straight and fast.
+Remove all content inside the destination folder (the old/existing addon files and folders) first, before even start the unzip process. Then unzip all addons directly into the destination folder. This is the approach release version 1.0.3 uses now.
+- Approach 2:
+Unzip all addons in separate temp folders. When no error occurred, while unzipping, just replace every file/folder in the destination folder with the ones from the temp folder. This is the approach release version 1.0.0-1.0.2 used.
+- Approach 3:
+Unzip all addons first, into a single temp folder. Then remove all files/folders in the destination folder and move all files/folders from temp folder to destination folder.
 
 
 #### Have fun.
