@@ -56,42 +56,37 @@
             return false;
         }
 
-        public async Task DeleteFolderContentAsync(string folder)
+        public async Task DeleteFolderContentAsync(string folder, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(folder))
             {
                 throw new ArgumentException($"'{nameof(folder)}' cannot be null or whitespace.", nameof(folder));
             }
 
-            // Doing no further input validation here (i.e. if path is an existing folder). It
-            // seems fine to me if below code will do that job and maybe fails gracefully then,
-            // since such checks will be done by the logic anyway before this method is called.
+            // Normally some further input validations (i.e. if path is an existing folder) should happen here,
+            // since this helper is an independent module and not some private method. But it seems fine to me
+            // if the code below will do that job instead and maybe fails gracefully then. And not doing those
+            // validations twice (since the app logic does them anyway) seems to be more beneficial here to me.
 
-            var directoryInfo = new DirectoryInfo(folder);
+            var files = Directory.EnumerateFiles(folder);
+            var directories = Directory.EnumerateDirectories(folder);
+
+            if (!files.Any() && !directories.Any())
+            {
+                return;
+            }
 
             // This async approach is around 3 times faster than the sync approach, after some
             // measurements. Looks like a modern SSD/OS seems to be rather concurrent-friendly.
 
-            var tasks = directoryInfo.EnumerateFileSystemInfos().Select(fsi => Task.Run(() =>
-            {
-                // Need to differ here, since FileSystemInfo.Delete() only works with empty
-                // folders. And using this early-exit approach to ignore the rare case when
-                // a FileSystemInfo object is wether a file nor a folder. Just to make sure.
+            var tasks = new List<Task>();
 
-                if (fsi is DirectoryInfo di)
-                {
-                    di.Delete(true);
+            // No need for ThrowIfCancellationRequested() here, since Task.Run() will cancel on its own,
+            // if task not already started. Which results in exactly the same behavior, since this task
+            // is somewhat "atomic", by just calling a single method, which can not be cancelled anyway.
 
-                    return;
-                }
-
-                if (fsi is FileInfo fi)
-                {
-                    fi.Delete();
-
-                    return;
-                }
-            }));
+            tasks.AddRange(files.Select(s => Task.Run(() => File.Delete(s), cancellationToken)));
+            tasks.AddRange(directories.Select(s => Task.Run(() => Directory.Delete(s, true), cancellationToken)));
 
             await Task.WhenAll(tasks).ConfigureAwait(false);
 
@@ -100,9 +95,9 @@
 
             var counter = 0;
 
-            while (directoryInfo.EnumerateFileSystemInfos().Any())
+            while (Directory.EnumerateFileSystemEntries(folder).Any())
             {
-                await Task.Delay(50).ConfigureAwait(false);
+                await Task.Delay(50, cancellationToken).ConfigureAwait(false);
 
                 // Throw exception after ~500ms to prevent blocking forever.
 
@@ -113,6 +108,11 @@
                     throw new InvalidOperationException("Could not delete folder content.");
                 }
             }
+        }
+
+        public async Task MoveFolderContentAsync(string sourceFolder, string destinationFolder, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }
