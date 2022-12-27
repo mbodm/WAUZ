@@ -18,11 +18,9 @@ It´s just a typical ".exe file" Windows application. Just download the newest r
 - Press the "Unzip" button.
 - Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
-:warning:
+:warning: If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) :warning:
 
-If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) about a possible "data loss" inside the selected destination folder!
-
-:warning:
+<!-- about a possible "data loss" inside the selected destination folder! -->
 
 ### Why it exists
 I developed a download manager for World of Warcraft addons, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of my addon updating needs with ease. But since Curse/Overwolf changed their political stance, alternative download managers (like mine, Ajour, WowUp, or others) no longer works with the https://www.curseforge.com site, or their REST web service. The only option is to use their own addon download manager. Many of us don´t want that, for different reasons.
