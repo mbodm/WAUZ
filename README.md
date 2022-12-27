@@ -20,7 +20,7 @@ It´s just a typical ".exe file" Windows application. Just download the newest r
 
 :warning:
 
-If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher)
+If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) below!
 
 :warning:
 
