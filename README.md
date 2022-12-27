@@ -59,7 +59,10 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 
 ### Important notes when using release version 1.0.3 or higher
 
-The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit more in detail here, since this may be important for the user, when it comes down to "data loss" inside the selected destination folder.
+The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit more in detail here.
+
+<!--
+since this may be important for the user, when it comes down to "data loss" inside the selected destination folder.
 
 The short version:
 
@@ -85,7 +88,7 @@ Remove all content inside the destination folder (the old/existing addon files a
 Unzip all addons in separate temp folders. When no error occurred, while unzipping, just replace every file/folder in the destination folder with the ones from the temp folder. This is the approach release version 1.0.0-1.0.2 used.
 - Approach 3:
 Unzip all addons first, into a single temp folder. Then remove all files/folders in the destination folder and move all files/folders from temp folder to destination folder.
-
+-->
 
 #### Have fun.
 
