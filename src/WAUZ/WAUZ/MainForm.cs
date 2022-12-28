@@ -23,14 +23,15 @@ namespace WAUZ
             textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Typically some temporary download folder.";
             textBoxDest.PlaceholderText = "The folder to unzip the addons into. Typically the World of Warcraft AddOns folder.";
 
-            // Using Label control for "links", instead of LinkLabel, for 2 reasons:
-            // 1) Actually there is an issue with LinkLabel. It´s text is truncated
-            // if it´s disabled. See https://github.com/dotnet/winforms/issues/7341
-            // 2) First workaround was: Changing the color and click handler of the
-            // LinkLabel control to "fake" the disabled state of the LinkLabel. But
-            // this was even more complicated than just alienate a normal Label for
-            // my needs. And since i do not benefit from the advantages a LinkLabel
-            // has, in contrast to a normal Label, i use colored normal Labels here.
+            // Todo: Hier gehts weiter
+
+            // Using the Label control for "links" (instead of the LinkLabel control) for 2 reasons:
+            // 1) Actually there is an LinkLabel issue: Text is truncated when control is disabled.
+            //    Have a look at https://github.com/dotnet/winforms/issues/7341 for more information.
+            // 2) First workaround was to change color and click handler of LinkLabel control to fake
+            //    disabled state of the LinkLabel. But this was even more complicated than just alienate
+            //    a  Label for my needs. Since i do not benefit much from the
+            //    the advantages a LinkLabel has (in contrast to Label) i just use colored Labels here.
 
             var defaultLinkLabelColor = new LinkLabel().LinkColor;
 
@@ -168,11 +169,11 @@ namespace WAUZ
 
                 cancellationTokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 30));
 
-                var ms = await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
+                var milliSeconds = await businessLogic.UnzipAsync(new Progress<UnzipProgress>(unzipProgress =>
                 {
-                    progressBar.Value++;
-                    var zipFileName = Path.GetFileName(progressData.ZipFile);
+                    var zipFileName = Path.GetFileName(unzipProgress.ZipFile);
                     labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons ... ({zipFileName})";
+                    progressBar.Value++;
                 }),
                 cancellationTokenSource.Token);
 
@@ -185,9 +186,9 @@ namespace WAUZ
 
                 await Task.Delay(1500);
 
-                var duration = (double)(ms + 1500) / 1000;
+                var seconds = (double)(milliSeconds + 1500) / 1000;
 
-                labelProgressBar.Text = $"Successfully unzipped {progressBar.Value} addons after {duration:0.00} seconds.";
+                labelProgressBar.Text = $"Successfully unzipped {progressBar.Value} addons after {seconds:0.00} seconds.";
             }
             catch (Exception ex)
             {

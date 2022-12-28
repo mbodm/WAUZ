@@ -67,7 +67,6 @@ namespace WAUZ.BL
         public IEnumerable<string> GetZipFiles()
         {
             var sourceFolder = ValidateSourceFolder();
-
             var zipFiles = Directory.EnumerateFiles(sourceFolder, "*.zip", SearchOption.TopDirectoryOnly);
 
             if (!zipFiles.Any())
@@ -78,25 +77,23 @@ namespace WAUZ.BL
             return zipFiles;
         }
 
-        public async Task<long> UnzipAsync(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
+        public async Task<long> UnzipAsync(IProgress<UnzipProgress>? progress = null, CancellationToken cancellationToken = default)
         {
             var zipFiles = GetZipFiles();
-
             var destFolder = ValidateDestFolder();
 
             var stopwatch = Stopwatch.StartNew();
 
-            await fileSystemHelper.DeleteFolderContentAsync(DestFolder).ConfigureAwait(false);
+            var tempFolder = await fileSystemHelper.CreateTempFolderAsync(cancellationToken).ConfigureAwait(false);
 
             var tasks = zipFiles.Select(zipFile => Task.Run(() =>
             {
-                // No need for ThrowIfCancellationRequested() here, since Task.Run() will cancel on its own,
-                // if task not already started. Which results in exactly the same behavior, since unzipping
-                // and reporting should be viewed as atomic. Cause if a file was unzipped, it is a progress.
+                // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the task
+                // has not already started. Also this workload is "atomic" (if a file was unzipped, it is a progress).
 
                 try
                 {
-                    ZipFile.ExtractToDirectory(zipFile, destFolder);
+                    ZipFile.ExtractToDirectory(zipFile, tempFolder);
                 }
                 catch (Exception e)
                 {
@@ -105,11 +102,7 @@ namespace WAUZ.BL
                     throw;
                 }
 
-                progress?.Report(new()
-                {
-                    ZipFile = zipFile,
-                    DestFolder = destFolder
-                });
+                progress?.Report(new() { ZipFile = zipFile });
             },
             cancellationToken));
 
@@ -123,6 +116,9 @@ namespace WAUZ.BL
 
                 throw new InvalidOperationException("An error occurred while extracting the zip files (see log file for details).");
             }
+
+            await fileSystemHelper.DeleteFolderContentAsync(destFolder, cancellationToken).ConfigureAwait(false);
+            await fileSystemHelper.MoveFolderContentAsync(tempFolder, destFolder, cancellationToken).ConfigureAwait(false);
 
             stopwatch.Stop();
 

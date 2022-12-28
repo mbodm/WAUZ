@@ -3,8 +3,8 @@
     public interface IFileSystemHelper
     {
         bool IsValidAbsolutePath(string path);
-        // Todo: CreateTempFolder() Aber diesmal alle in 1 Folder und das vorher löschen
+        Task<string> CreateTempFolderAsync(CancellationToken cancellationToken = default);
         Task DeleteFolderContentAsync(string folder, CancellationToken cancellationToken = default);
-        Task MoveFolderContentAsync(string sourceFolder, string destinationFolder, CancellationToken cancellationToken = default);
+        Task MoveFolderContentAsync(string sourceFolder, string destFolder, CancellationToken cancellationToken = default);
     }
 }

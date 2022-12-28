@@ -63,10 +63,23 @@
                 throw new ArgumentException($"'{nameof(folder)}' cannot be null or whitespace.", nameof(folder));
             }
 
-            // Normally some further input validations (i.e. if path is an existing folder) should happen here,
-            // since this helper is an independent module and not some private method. But it seems fine to me
-            // if the code below will do that job instead and maybe fails gracefully then. And not doing those
-            // validations twice (since the app logic does them anyway) seems to be more beneficial here to me.
+            if (!Directory.Exists(folder))
+            {
+                throw new InvalidOperationException("Given folder not exists.");
+            }
+
+            folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
+
+            // It does not matter which .NET methods are used to enumerate files and folders.
+            // At least this was the result of measurements i did for the following methods:
+            // - Directory.GetXXX()
+            // - Directory.EnumerateXXX()
+            // - DirectoryInfo.GetXXX()
+            // - DirectoryInfo.EnumerateXXX()
+            // All had the exact same performance and it does not matter which to use. If at all,
+            // it is more beneficial to use directly the xxxFiles() and xxxDirectories() versions,
+            // instead of the xxxFileSystemEntries() and xxxFileSystemInfos() methods. Cause the
+            // latter ones need some additional if-clauses then, to differ files from directories.
 
             var files = Directory.EnumerateFiles(folder);
             var directories = Directory.EnumerateDirectories(folder);
@@ -76,14 +89,13 @@
                 return;
             }
 
-            // This async approach is around 3 times faster than the sync approach, after some
-            // measurements. Looks like a modern SSD/OS seems to be rather concurrent-friendly.
+            // After some measurements this async approach seems to be around 3 times faster than
+            // the sync approach. Looks like a modern SSD/OS seems to be rather concurrent-friendly.
 
             var tasks = new List<Task>();
 
-            // No need for ThrowIfCancellationRequested() here, since Task.Run() will cancel on its own,
-            // if task not already started. Which results in exactly the same behavior, since this task
-            // is somewhat "atomic", by just calling a single method, which can not be cancelled anyway.
+            // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the
+            // task has not already started and since the sync method one-liner can not be cancelled anyway.
 
             tasks.AddRange(files.Select(s => Task.Run(() => File.Delete(s), cancellationToken)));
             tasks.AddRange(directories.Select(s => Task.Run(() => Directory.Delete(s, true), cancellationToken)));
@@ -110,9 +122,81 @@
             }
         }
 
-        public async Task MoveFolderContentAsync(string sourceFolder, string destinationFolder, CancellationToken cancellationToken = default)
+        public Task MoveFolderContentAsync(string sourceFolder, string destFolder, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(sourceFolder))
+            {
+                throw new ArgumentException($"'{nameof(sourceFolder)}' cannot be null or whitespace.", nameof(sourceFolder));
+            }
+
+            if (string.IsNullOrWhiteSpace(destFolder))
+            {
+                throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
+            }
+
+            if (!Directory.Exists(sourceFolder))
+            {
+                throw new InvalidOperationException("Given source folder not exists.");
+            }
+
+            if (!Directory.Exists(destFolder))
+            {
+                throw new InvalidOperationException("Given destination folder not exists.");
+            }
+
+            sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceFolder));
+            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder));
+
+            var sourceFiles = Directory.EnumerateFiles(sourceFolder);
+            var sourceDirectories = Directory.EnumerateDirectories(sourceFolder);
+
+            if (!sourceFiles.Any() && !sourceDirectories.Any())
+            {
+                return Task.CompletedTask;
+            }
+
+            var buildDestPathFunc = (string sourcePath, string destFolder) =>
+            {
+                // In .NET the Path.GetFileName() method is used for both:
+                // To get a file´s name, as well as to get a folder´s name.
+
+                var fileOrFolderName = Path.GetFileName(sourcePath);
+                var destPath = Path.Combine(destFolder, fileOrFolderName);
+
+                return Path.TrimEndingDirectorySeparator(destPath);
+            };
+
+            var tasks = new List<Task>();
+
+            // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the
+            // task has not already started and since the sync method one-liner can not be cancelled anyway.
+
+            tasks.AddRange(sourceFiles.Select(s => Task.Run(() => File.Move(s, buildDestPathFunc(s, destFolder)), cancellationToken)));
+            tasks.AddRange(sourceDirectories.Select(s => Task.Run(() => Directory.Move(s, buildDestPathFunc(s, destFolder)), cancellationToken)));
+
+            return Task.WhenAll(tasks);
+        }
+
+        public async Task<string> CreateTempFolderAsync(CancellationToken cancellationToken = default)
+        {
+            var userTempFolder = Path.GetFullPath(Path.GetTempPath());
+
+            var tempFolder = Path.TrimEndingDirectorySeparator(Path.Combine(userTempFolder, "MBODM.WAUZ.tmp"));
+
+            // Creating a task is more time-costy than calling Exists() directly.
+
+            if (Directory.Exists(tempFolder))
+            {
+                // Creating a task for calling Delete() since its duration is not predictable.
+
+                await Task.Run(() => Directory.Delete(tempFolder, true), cancellationToken).ConfigureAwait(false);
+            }
+
+            // Creating a task is more time-costy than calling CreateDirectory() directly.
+
+            Directory.CreateDirectory(tempFolder);
+
+            return tempFolder;
         }
     }
 }
