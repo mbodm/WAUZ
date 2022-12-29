@@ -12,6 +12,6 @@
         string ValidateDestFolder();
 
         IEnumerable<string> GetZipFiles();
-        Task<long> UnzipAsync(IProgress<UnzipProgress>? progress = default, CancellationToken cancellationToken = default);
+        Task<long> UnzipAsync(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
     }
 }

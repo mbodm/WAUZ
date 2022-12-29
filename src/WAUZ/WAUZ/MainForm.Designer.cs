@@ -70,7 +70,7 @@
             this.textBoxSource.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSource.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.textBoxSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.textBoxSource.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.textBoxSource.Location = new System.Drawing.Point(12, 43);
             this.textBoxSource.Name = "textBoxSource";
             this.textBoxSource.Size = new System.Drawing.Size(560, 23);
@@ -81,7 +81,7 @@
             this.textBoxDest.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxDest.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.textBoxDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
+            this.textBoxDest.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(35)))), ((int)(((byte)(35)))), ((int)(((byte)(35)))));
             this.textBoxDest.Location = new System.Drawing.Point(12, 134);
             this.textBoxDest.Name = "textBoxDest";
             this.textBoxDest.Size = new System.Drawing.Size(560, 23);
@@ -134,7 +134,7 @@
             this.labelProgressBar.Location = new System.Drawing.Point(9, 258);
             this.labelProgressBar.Margin = new System.Windows.Forms.Padding(0);
             this.labelProgressBar.Name = "labelProgressBar";
-            this.labelProgressBar.Size = new System.Drawing.Size(300, 15);
+            this.labelProgressBar.Size = new System.Drawing.Size(375, 15);
             this.labelProgressBar.TabIndex = 9;
             this.labelProgressBar.Text = "Progress:";
             // 

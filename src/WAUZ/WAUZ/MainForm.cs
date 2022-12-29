@@ -34,6 +34,8 @@ namespace WAUZ
 
             labelSourceLink.ForeColor = defaultLinkLabelColor;
             labelDestLink.ForeColor = defaultLinkLabelColor;
+
+            CancelButton = buttonClose;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -162,15 +164,43 @@ namespace WAUZ
 
             try
             {
-                progressBar.Maximum = businessLogic.GetZipFiles().Count();
+                var zipFilesCount = businessLogic.GetZipFiles().Count();
+
+                progressBar.Maximum = zipFilesCount;
 
                 cancellationTokenSource = new CancellationTokenSource(new TimeSpan(0, 0, 30));
 
-                var milliSeconds = await businessLogic.UnzipAsync(new Progress<UnzipProgress>(unzipProgress =>
+                var milliSeconds = await businessLogic.UnzipAsync(new Progress<ProgressData>(progressData =>
                 {
-                    var zipFileName = Path.GetFileName(unzipProgress.ZipFile);
-                    labelProgressBar.Text = $"Progress: Unzip {progressBar.Value} / {progressBar.Maximum} addons ... ({zipFileName})";
-                    progressBar.Value++;
+                    switch (progressData.State)
+                    {
+                        case ProgressState.Started:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.UnzipAddon:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.UnzippedAddon:
+                            progressBar.Value++;
+                            var zipFileName = Path.GetFileName(progressData.Zip);
+                            labelProgressBar.Text = $"Progress: Unzipped {progressBar.Value} / {zipFilesCount} addons ... ({zipFileName})";
+                            break;
+                        case ProgressState.ClearDestFolder:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.ClearedDestFolder:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.MoveFromTempToDest:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.MovedFromTempToDest:
+                            // State not used at the moment.
+                            break;
+                        case ProgressState.Finished:
+                            // State not used at the moment.
+                            break;
+                    }
                 }),
                 cancellationTokenSource.Token);
 
@@ -181,11 +211,11 @@ namespace WAUZ
                 // *(TAP concepts, when using IProgress<>, often need some semaphore-blocking-mechanism, because
                 // a scheduler can still produce async progress, even when Task.WhenAll() already has finished).
 
-                await Task.Delay(1500);
+                await Task.Delay(1000);
 
-                var seconds = (double)(milliSeconds + 1500) / 1000;
+                var seconds = (double)(milliSeconds + 1000) / 1000;
 
-                labelProgressBar.Text = $"Successfully unzipped {progressBar.Value} addons after {seconds:0.00} seconds.";
+                labelProgressBar.Text = $"Successfully unzipped {zipFilesCount} addons after {seconds:0.00} seconds.";
             }
             catch (Exception ex)
             {

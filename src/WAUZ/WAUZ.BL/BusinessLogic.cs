@@ -77,12 +77,14 @@ namespace WAUZ.BL
             return zipFiles;
         }
 
-        public async Task<long> UnzipAsync(IProgress<UnzipProgress>? progress = null, CancellationToken cancellationToken = default)
+        public async Task<long> UnzipAsync(IProgress<ProgressData>? progress = null, CancellationToken cancellationToken = default)
         {
             var zipFiles = GetZipFiles();
             var destFolder = ValidateDestFolder();
 
             var stopwatch = Stopwatch.StartNew();
+
+            progress?.Report(new(ProgressState.Started));
 
             var tempFolder = await fileSystemHelper.CreateTempFolderAsync(cancellationToken).ConfigureAwait(false);
 
@@ -90,6 +92,8 @@ namespace WAUZ.BL
             {
                 // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the task
                 // has not already started. Also this workload is "atomic" (if a file was unzipped, it is a progress).
+
+                progress?.Report(new(ProgressState.UnzipAddon, zipFile));
 
                 try
                 {
@@ -102,7 +106,7 @@ namespace WAUZ.BL
                     throw;
                 }
 
-                progress?.Report(new() { ZipFile = zipFile });
+                progress?.Report(new(ProgressState.UnzippedAddon, zipFile));
             },
             cancellationToken));
 
@@ -117,8 +121,15 @@ namespace WAUZ.BL
                 throw new InvalidOperationException("An error occurred while extracting the zip files (see log file for details).");
             }
 
+            progress?.Report(new(ProgressState.ClearDestFolder));
             await fileSystemHelper.DeleteFolderContentAsync(destFolder, cancellationToken).ConfigureAwait(false);
+            progress?.Report(new(ProgressState.ClearedDestFolder));
+
+            progress?.Report(new(ProgressState.MoveFromTempToDest));
             await fileSystemHelper.MoveFolderContentAsync(tempFolder, destFolder, cancellationToken).ConfigureAwait(false);
+            progress?.Report(new(ProgressState.MovedFromTempToDest));
+
+            progress?.Report(new(ProgressState.Finished));
 
             stopwatch.Stop();
 
