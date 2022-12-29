@@ -5,14 +5,14 @@ namespace WAUZ.BL
 {
     public sealed class BusinessLogic : IBusinessLogic
     {
-        private readonly IAppLogging appLogging;
         private readonly IAppSettings appSettings;
+        private readonly IErrorLogger errorLogger;
         private readonly IFileSystemHelper fileSystemHelper;
 
-        public BusinessLogic(IAppLogging appLogging, IAppSettings appSettings, IFileSystemHelper fileSystemHelper)
+        public BusinessLogic(IAppSettings appSettings, IErrorLogger errorLogger, IFileSystemHelper fileSystemHelper)
         {
-            this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
             this.appSettings = appSettings ?? throw new ArgumentNullException(nameof(appSettings));
+            this.errorLogger = errorLogger ?? throw new ArgumentNullException(nameof(errorLogger));
             this.fileSystemHelper = fileSystemHelper ?? throw new ArgumentNullException(nameof(fileSystemHelper));
         }
 
@@ -27,7 +27,7 @@ namespace WAUZ.BL
             }
             catch (Exception e)
             {
-                appLogging.Log(e);
+                errorLogger.Log(e);
 
                 throw new InvalidOperationException("An error occurred while loading the settings (see log file for details).");
             }
@@ -54,7 +54,7 @@ namespace WAUZ.BL
             }
             catch (Exception e)
             {
-                appLogging.Log(e);
+                errorLogger.Log(e);
 
                 throw new InvalidOperationException("An error occurred while saving the settings (see log file for details).");
             }
@@ -97,7 +97,7 @@ namespace WAUZ.BL
                 }
                 catch (Exception e)
                 {
-                    appLogging.Log(e);
+                    errorLogger.Log(e);
 
                     throw;
                 }
@@ -112,7 +112,7 @@ namespace WAUZ.BL
             }
             catch (Exception e)
             {
-                appLogging.Log(e);
+                errorLogger.Log(e);
 
                 throw new InvalidOperationException("An error occurred while extracting the zip files (see log file for details).");
             }

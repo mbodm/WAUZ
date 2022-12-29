@@ -7,13 +7,13 @@ namespace WAUZ
     {
         private CancellationTokenSource cancellationTokenSource = new();
 
-        private readonly IAppLogging appLogging;
         private readonly IBusinessLogic businessLogic;
+        private readonly IErrorLogger errorLogger;
 
-        public MainForm(IAppLogging appLogging, IBusinessLogic businessLogic)
+        public MainForm(IBusinessLogic businessLogic, IErrorLogger errorLogger)
         {
-            this.appLogging = appLogging ?? throw new ArgumentNullException(nameof(appLogging));
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
+            this.errorLogger = errorLogger ?? throw new ArgumentNullException(nameof(errorLogger));
 
             InitializeComponent();
 
@@ -94,9 +94,9 @@ namespace WAUZ
                 businessLogic.ValidateSourceFolder();
                 Process.Start("explorer", businessLogic.SourceFolder);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                ShowError(ex.Message);
+                HandleError(ex);
             }
         }
 
@@ -132,9 +132,9 @@ namespace WAUZ
                 businessLogic.ValidateDestFolder();
                 Process.Start("explorer", businessLogic.DestFolder);
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                ShowError(ex.Message);
+                HandleError(ex);
             }
         }
 
@@ -148,9 +148,9 @@ namespace WAUZ
                 businessLogic.ValidateSourceFolder();
                 businessLogic.ValidateDestFolder();
             }
-            catch (InvalidOperationException ex)
+            catch (Exception ex)
             {
-                ShowError(ex.Message);
+                HandleError(ex);
                 return;
             }
 
@@ -189,16 +189,7 @@ namespace WAUZ
             }
             catch (Exception ex)
             {
-                appLogging.Log(ex);
-
-                if (ex is InvalidOperationException)
-                {
-                    ShowError(ex.Message);
-                }
-                else
-                {
-                    ShowError("An unexpected error occurred (see log file for details).");
-                }
+                HandleError(ex);
 
                 labelProgressBar.Text = "Error occurred.";
                 progressBar.Value = progressBar.Minimum;
@@ -245,14 +236,28 @@ namespace WAUZ
             return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
-        private void SetControls(bool state)
+        private void HandleError(Exception exception)
         {
-            Controls.Cast<Control>().ToList().ForEach(control => control.Enabled = state);
+            if (exception is InvalidOperationException)
+            {
+                ShowError(exception.Message);
+            }
+            else
+            {
+                errorLogger.Log(exception);
+
+                ShowError("An unexpected error occurred (see log file for details).");
+            }
         }
 
         private static void ShowError(string errorText)
         {
             MessageBox.Show(errorText, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private void SetControls(bool state)
+        {
+            Controls.Cast<Control>().ToList().ForEach(control => control.Enabled = state);
         }
     }
 }

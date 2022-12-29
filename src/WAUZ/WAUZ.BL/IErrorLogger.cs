@@ -1,6 +1,6 @@
 ﻿namespace WAUZ.BL
 {
-    public interface IAppLogging
+    public interface IErrorLogger
     {
         void Log(string message);
         void Log(Exception exception);
