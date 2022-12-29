@@ -1,0 +1,16 @@
+The icon was created by the following workflow steps:
+- Start Windows 10 machine (Windows 10 Pro 21H2 Build 19044.2251)
+- Make sure WoW Retail (Shadowlands) and Visual Studio 2022 are installed
+- Extract official WoW icon from C:\Program Files (x86)\World of Warcraft\_retail_\Wow.exe by using Visual Studio 2022
+- WoW icon contains 4 icon sizes (16, 24, 32 and 48)
+- Extract official Windows zip icon from %SystemRoot%\System32\imageres.dll (icon number 174) by using Visual Studio 2022
+- Convert 4 zip icon sizes (16, 24, 32 and 48) into PNG by using https://cloudconvert.com
+- Load WoW icon by using https://redketchup.io/icon-editor
+- Insert above zip PNG images and manually position them at left bottom corner by using https://redketchup.io/icon-editor
+- Move the zip image in left bottom corner so it uses exactly 1/4 of the icon´s space
+- Repeat previous step for all 4 icon sizes (16, 24, 32 and 48) by using https://redketchup.io/icon-editor
+- Download new icon by using https://redketchup.io/icon-editor
+- Rename downloaded new icon to WAUZ103.ico
+
+MBODM
+2022-12-30
