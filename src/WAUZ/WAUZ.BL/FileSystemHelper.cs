@@ -70,8 +70,8 @@
 
             folder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(folder));
 
-            // It does not matter which .NET methods are used to enumerate files and folders.
-            // At least this was the result of measurements i did for the following methods:
+            // It does not matter which .NET methods are used to enumerate files and folders here.
+            // At least this was the result of some measurements i did for the following methods:
             // - Directory.GetXXX()
             // - Directory.EnumerateXXX()
             // - DirectoryInfo.GetXXX()
@@ -183,16 +183,13 @@
 
             var tempFolder = Path.TrimEndingDirectorySeparator(Path.Combine(userTempFolder, "MBODM.WAUZ.tmp"));
 
-            // Creating a task is more time-costy than calling Exists() directly.
+            // Using a task for Delete() seems fine, since the I/O operation duration is not predictable.
+            // But creating tasks for Exists() and CreateDirectory() is not worth the task startup time.
 
             if (Directory.Exists(tempFolder))
             {
-                // Creating a task for calling Delete() since its duration is not predictable.
-
                 await Task.Run(() => Directory.Delete(tempFolder, true), cancellationToken).ConfigureAwait(false);
             }
-
-            // Creating a task is more time-costy than calling CreateDirectory() directly.
 
             Directory.CreateDirectory(tempFolder);
 

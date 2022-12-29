@@ -23,15 +23,12 @@ namespace WAUZ
             textBoxSource.PlaceholderText = "The folder which contains the addon zip files. Typically some temporary download folder.";
             textBoxDest.PlaceholderText = "The folder to unzip the addons into. Typically the World of Warcraft AddOns folder.";
 
-            // Todo: Hier gehts weiter
-
-            // Using the Label control for "links" (instead of the LinkLabel control) for 2 reasons:
-            // 1) Actually there is an LinkLabel issue: Text is truncated when control is disabled.
-            //    Have a look at https://github.com/dotnet/winforms/issues/7341 for more information.
-            // 2) First workaround was to change color and click handler of LinkLabel control to fake
-            //    disabled state of the LinkLabel. But this was even more complicated than just alienate
-            //    a  Label for my needs. Since i do not benefit much from the
-            //    the advantages a LinkLabel has (in contrast to Label) i just use colored Labels here.
+            // I use the Label control for hyperlinks, instead of the LinkLabel control, for 2 reasons:
+            // 1) Actually there is an issue with LinkLabel: Text is truncated when control is disabled.
+            // Just have a look at https://github.com/dotnet/winforms/issues/7341 for more information.
+            // 2) First i tried some workaround: Change LinkLabel color and click handler to "fake" its
+            // disabled state. But this was even more complicated than the actual solution: Just use a
+            // colored normal Label, since i do not benefit much from the advantages a LinkLabel offers.
 
             var defaultLinkLabelColor = new LinkLabel().LinkColor;
 
@@ -177,12 +174,12 @@ namespace WAUZ
                 }),
                 cancellationTokenSource.Token);
 
-                // Even with typical semaphore-blocking-mechanism* it is impossible to prevent Windows.Forms
-                // ProgressBar control from reaching its maximum, shortly after last async progress happened.
-                // Control is painted natively by the WinApi/OS itself, therefore also no event-based tricks
-                // will solve problem. Just added some short async wait delay instead, to keep things simple.
-                // *(TAP concepts, when using IProgress, often need some semaphore-blocking-mechanism, cause
-                // scheduler can still produce async progress, even when Task.WhenAll() already has finished).
+                // Even with a typical semaphore-blocking-mechanism* it is impossible to prevent a Windows.Forms
+                // ProgressBar control from reaching its maximum shortly after the last async progress happened.
+                // The control is painted natively by the WinApi/OS itself. Therefore also no event-based tricks
+                // will solve the problem. I just added a short async wait delay instead, to keep things simple.
+                // *(TAP concepts, when using IProgress<>, often need some semaphore-blocking-mechanism, because
+                // a scheduler can still produce async progress, even when Task.WhenAll() already has finished).
 
                 await Task.Delay(1500);
 
@@ -224,8 +221,8 @@ namespace WAUZ
 
         private static string GetVersion()
         {
-            // Most simple way to get product version (semantic versioning)
-            // in .NET5/6 onwards. Used as "Version" entry in .csproj file.
+            // Seems to be the most simple way to get the product version (semantic versioning) for .NET5/6 onwards.
+            // Application.ProductVersion.ToString() is the counterpart of the "Version" entry in the .csproj file.
 
             return Application.ProductVersion.ToString();
         }

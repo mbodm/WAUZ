@@ -138,10 +138,9 @@ namespace WAUZ.BL
                     "Given path must be a valid, absolute path, to an existing folder.");
             }
 
-            // Easy to foresee max length of source. Not that easy to foresee max length of dest,
-            // when also considering zip file content (files and subfolders). Instead just using
-            // half of MAX_PATH here, as some "rule of thumb". If in some rare cases a full dest
-            // path exceeds MAX_PATH, it is ok to let unzip operation fail gracefully on its own.
+            // Easy to foresee max length of source. Not that easy to foresee max length of dest, when considering content of
+            // zip file (files and subfolders). Therefore just using half of MAX_PATH here, as some "rule of thumb". If in a
+            // rare case a full dest path exceeds MAX_PATH, it seems ok to let the unzip operation fail gracefully on its own.
 
             var maxPath = 260;
             var maxLength = maxPath / 2;
