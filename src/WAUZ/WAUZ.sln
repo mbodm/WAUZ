@@ -7,11 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ", "WAUZ\WAUZ.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ.BL", "WAUZ.BL\WAUZ.BL.csproj", "{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WAUZ.CMD", "WAUZ.CMD\WAUZ.CMD.csproj", "{545F8BD3-4D9A-4F26-BA3C-D34880E9FB10}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7} = {DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,10 +21,6 @@ Global
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{545F8BD3-4D9A-4F26-BA3C-D34880E9FB10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{545F8BD3-4D9A-4F26-BA3C-D34880E9FB10}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{545F8BD3-4D9A-4F26-BA3C-D34880E9FB10}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{545F8BD3-4D9A-4F26-BA3C-D34880E9FB10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
