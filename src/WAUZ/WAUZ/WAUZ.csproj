@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon>WAUZ.ico</ApplicationIcon>
+    <ApplicationIcon>WAUZ103.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="WAUZ.ico" />
+    <Content Include="WAUZ103.ico" />
   </ItemGroup>
 
 </Project>
