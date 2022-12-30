@@ -102,7 +102,9 @@ Unzip all addons first, into a single temp folder. Then remove all files/folders
 > - This is a list of ideas, used as my personal todo list. Better centralized here, than somewhere else.
 > - Add WAUZ command line version (easy, BusinessLogic already exists).
 > - :heavy_check_mark: Maybe add navigation links to UI, to quickly open the selected folders in Explorer?
-> - Maybe add navigation links to UI, to quickly open the settings/log files or folder?
+> - :x: !! Decided against !! Maybe add navigation links to UI, to quickly open the settings/log files or folder?
+> - :x: Decided against previous point since the log file not exists 99% of the time, since its just created on hard errors.
+> - :x: Decided against previous point since the settings shall not be prominent (in contrast to the WADM config file).
 > - :heavy_check_mark: Maybe implement some temp folder cleanup check, before unzipping?
 > - :heavy_check_mark: To cleanup any existing/old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
