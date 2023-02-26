@@ -11,16 +11,16 @@ It´s used to unzip a bunch of downloaded zip files, residing in some folder, in
 It´s just a typical ".exe file" Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that. It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. 
 
 ### How it works
+
 - Download a bunch of World of Warcraft addons (typically from https://www.curseforge.com) into some folder.
 - Start WAUZ
 - Select the folder which contains the addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
 
+Some easy way to grab your addons
 
-Some additional hint here:
-
-Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
+Some additional hint here: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
 :warning:
 
