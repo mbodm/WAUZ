@@ -107,8 +107,8 @@ Unzip all addons first, into a single temp folder. Then remove all files/folders
 > - :x: !!! Decided against !!! --> Maybe add navigation links to UI, to quickly open the settings/log files or folder?
 > - :x: Decided against previous point since the log file not exists 99% of the time, since its just created on hard errors.
 > - :x: Decided against previous point since the settings shall not be prominent (in contrast to the WADM config file).
-> - :heavy_check_mark: !!! Implemented in 1.0.3 but removed in 1.0.4 !!! Maybe implement some temp folder cleanup check, before unzipping?
-> - :heavy_check_mark: !!! Implemented in 1.0.3 but removed in 1.0.4 !!! To cleanup any existing/old temp folders if app was closed too early in previous session.
+> - :heavy_check_mark: !!! Impl in 1.0.3 but removed in 1.0.4 !!! Maybe implement some temp folder cleanup check, before unzipping?
+> - :heavy_check_mark: !!! Impl in 1.0.3 but removed in 1.0.4 !!! To cleanup any existing/old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
 > - But maybe add additional infos when logging an exception (like the selected folders, etc).
 > - :heavy_check_mark: !! Unnecessary after 1.0.3 !! --> Maybe implement option (checkbox) to remove all content from Destination-Folder before unzip?
