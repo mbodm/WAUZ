@@ -1,5 +1,4 @@
-using System.Diagnostics;
-using WAUZ.BL;
+using WAUZ.Core;
 
 namespace WAUZ
 {
@@ -8,12 +7,10 @@ namespace WAUZ
         private CancellationTokenSource cancellationTokenSource = new();
 
         private readonly IBusinessLogic businessLogic;
-        private readonly IErrorLogger errorLogger;
 
-        public MainForm(IBusinessLogic businessLogic, IErrorLogger errorLogger)
+        public MainForm(IBusinessLogic businessLogic)
         {
             this.businessLogic = businessLogic ?? throw new ArgumentNullException(nameof(businessLogic));
-            this.errorLogger = errorLogger ?? throw new ArgumentNullException(nameof(errorLogger));
 
             InitializeComponent();
 
@@ -40,7 +37,14 @@ namespace WAUZ
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            businessLogic.LoadSettings();
+            try
+            {
+                businessLogic.LoadSettings();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
 
             textBoxSource.Text = businessLogic.SourceFolder;
             textBoxDest.Text = businessLogic.DestFolder;
@@ -70,36 +74,26 @@ namespace WAUZ
             businessLogic.SourceFolder = textBoxSource.Text;
             businessLogic.DestFolder = textBoxDest.Text;
 
-            businessLogic.SaveSettings();
+            try
+            {
+                businessLogic.SaveSettings();
+            }
+            catch (Exception ex)
+            {
+                HandleException(ex);
+            }
         }
 
         private void ButtonSource_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(textBoxSource.Text))
-            {
-                SelectFolder(textBoxSource, textBoxSource.Text);
-            }
-            else
-            {
-                SelectFolder(textBoxSource, GetDesktopFolder());
-            }
+            var startFolder = Directory.Exists(textBoxSource.Text) ? textBoxSource.Text : GetDesktopFolder();
+
+            SelectFolder(textBoxSource, startFolder);
         }
 
         private void LabelSourceLink_Click(object sender, EventArgs e)
         {
-            if (e is not MouseEventArgs mouseEventArgs) return;
-            if (mouseEventArgs.Button != MouseButtons.Left) return;
-
-            try
-            {
-                businessLogic.SourceFolder = textBoxSource.Text;
-                businessLogic.ValidateSourceFolder();
-                Process.Start("explorer", businessLogic.SourceFolder);
-            }
-            catch (Exception ex)
-            {
-                HandleError(ex);
-            }
+            OpenFolderInExplorer(e, true);
         }
 
         private void ButtonDest_Click(object sender, EventArgs e)
@@ -111,60 +105,31 @@ namespace WAUZ
             else
             {
                 var wowAddonsDefaultFolder = @"C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns";
+                var startFolder = Directory.Exists(wowAddonsDefaultFolder) ? wowAddonsDefaultFolder : GetDesktopFolder();
 
-                if (Directory.Exists(wowAddonsDefaultFolder))
-                {
-                    SelectFolder(textBoxDest, wowAddonsDefaultFolder);
-                }
-                else
-                {
-                    SelectFolder(textBoxDest, GetDesktopFolder());
-                }
+                SelectFolder(textBoxDest, startFolder);
             }
         }
 
         private void LabelDestLink_Click(object sender, EventArgs e)
         {
-            if (e is not MouseEventArgs mouseEventArgs) return;
-            if (mouseEventArgs.Button != MouseButtons.Left) return;
-
-            try
-            {
-                businessLogic.DestFolder = textBoxDest.Text;
-                businessLogic.ValidateDestFolder();
-                Process.Start("explorer", businessLogic.DestFolder);
-            }
-            catch (Exception ex)
-            {
-                HandleError(ex);
-            }
+            OpenFolderInExplorer(e, false);
         }
 
         private async void ButtonUnzip_Click(object sender, EventArgs e)
         {
-            businessLogic.SourceFolder = textBoxSource.Text;
-            businessLogic.DestFolder = textBoxDest.Text;
-
-            try
-            {
-                businessLogic.ValidateSourceFolder();
-                businessLogic.ValidateDestFolder();
-            }
-            catch (Exception ex)
-            {
-                HandleError(ex);
-                return;
-            }
-
             SetControls(false);
 
             labelProgressBar.Enabled = true;
             progressBar.Enabled = true;
             progressBar.Value = progressBar.Minimum;
 
+            businessLogic.SourceFolder = textBoxSource.Text;
+            businessLogic.DestFolder = textBoxDest.Text;
+
             try
             {
-                var zipFilesCount = businessLogic.GetZipFiles().Count();
+                var zipFilesCount = businessLogic.CountZipFiles();
 
                 progressBar.Maximum = zipFilesCount;
 
@@ -174,31 +139,13 @@ namespace WAUZ
                 {
                     switch (progressData.State)
                     {
-                        case ProgressState.Started:
-                            // State not used at the moment.
-                            break;
-                        case ProgressState.UnzipAddon:
-                            // State not used at the moment.
-                            break;
                         case ProgressState.UnzippedAddon:
                             progressBar.Value++;
                             var zipFileName = Path.GetFileName(progressData.Zip);
                             labelProgressBar.Text = $"Progress: Unzipped {progressBar.Value} / {zipFilesCount} addons ... ({zipFileName})";
                             break;
-                        case ProgressState.ClearDestFolder:
-                            // State not used at the moment.
-                            break;
-                        case ProgressState.ClearedDestFolder:
-                            // State not used at the moment.
-                            break;
-                        case ProgressState.MoveFromTempToDest:
-                            // State not used at the moment.
-                            break;
-                        case ProgressState.MovedFromTempToDest:
-                            // State not used at the moment.
-                            break;
-                        case ProgressState.Finished:
-                            // State not used at the moment.
+                        default:
+                            // All other states are not used at the moment, since the human eye is not fast enough. :)
                             break;
                     }
                 }),
@@ -211,18 +158,21 @@ namespace WAUZ
                 // *(TAP concepts, when using IProgress<>, often need some semaphore-blocking-mechanism, because
                 // a scheduler can still produce async progress, even when Task.WhenAll() already has finished).
 
-                await Task.Delay(1000);
+                await Task.Delay(1250);
 
-                var seconds = (double)(milliSeconds + 1000) / 1000;
+                var seconds = (double)(milliSeconds + 1250) / 1000;
 
-                labelProgressBar.Text = $"Successfully unzipped {zipFilesCount} addons after {seconds:0.00} seconds.";
+                labelProgressBar.Text = $"Successfully unzipped {zipFilesCount} addons in {seconds:0.00} seconds.";
             }
             catch (Exception ex)
             {
-                HandleError(ex);
+                if (ex is not ValidationException)
+                {
+                    labelProgressBar.Text = "Error occurred.";
+                    progressBar.Value = progressBar.Minimum;
+                }
 
-                labelProgressBar.Text = "Error occurred.";
-                progressBar.Value = progressBar.Minimum;
+                HandleException(ex);
             }
             finally
             {
@@ -250,10 +200,7 @@ namespace WAUZ
 
         private static void SelectFolder(TextBox textBox, string startFolder)
         {
-            using var dialog = new FolderBrowserDialog
-            {
-                InitialDirectory = startFolder
-            };
+            using var dialog = new FolderBrowserDialog { InitialDirectory = startFolder };
 
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -266,15 +213,49 @@ namespace WAUZ
             return Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
 
-        private void HandleError(Exception exception)
+        private void OpenFolderInExplorer(EventArgs e, bool isSourceFolder)
         {
-            if (exception is InvalidOperationException)
+            if (e is MouseEventArgs mouseEventArgs && mouseEventArgs.Button == MouseButtons.Left)
             {
-                ShowError(exception.Message);
+                // Save and recover the original states is not really
+                // necessary here and is just done to be super clean.
+
+                var orgSourceFolder = businessLogic.SourceFolder;
+                var orgDestFolder = businessLogic.DestFolder;
+
+                businessLogic.SourceFolder = textBoxSource.Text;
+                businessLogic.DestFolder = textBoxDest.Text;
+
+                try
+                {
+                    if (isSourceFolder)
+                    {
+                        businessLogic.OpenSourceFolderInExplorer();
+                    }
+                    else
+                    {
+                        businessLogic.OpenDestFolderInExplorer();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    HandleException(ex);
+                }
+
+                businessLogic.SourceFolder = orgSourceFolder;
+                businessLogic.DestFolder = orgDestFolder;
+            }
+        }
+
+        private void HandleException(Exception ex)
+        {
+            if (ex is ValidationException || ex is InvalidOperationException)
+            {
+                ShowError(ex.Message);
             }
             else
             {
-                errorLogger.Log(exception);
+                businessLogic.LogUnexpectedException(ex);
 
                 ShowError("An unexpected error occurred (see log file for details).");
             }

@@ -1,4 +1,4 @@
-﻿namespace WAUZ.BL
+﻿namespace WAUZ.Core
 {
     public interface IBusinessLogic
     {
@@ -8,10 +8,12 @@
         void LoadSettings();
         void SaveSettings();
 
-        string ValidateSourceFolder();
-        string ValidateDestFolder();
+        void OpenSourceFolderInExplorer();
+        void OpenDestFolderInExplorer();
 
-        IEnumerable<string> GetZipFiles();
+        int CountZipFiles();
         Task<long> UnzipAsync(IProgress<ProgressData>? progress = default, CancellationToken cancellationToken = default);
+
+        void LogUnexpectedException(Exception e);
     }
 }

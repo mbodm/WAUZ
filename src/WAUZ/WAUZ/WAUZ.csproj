@@ -10,15 +10,15 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.3</Version>
+    <Version>1.0.4</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WAUZ.BL\WAUZ.BL.csproj" />
+    <Content Include="WAUZ103.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="WAUZ103.ico" />
+    <ProjectReference Include="..\WAUZ.Core\WAUZ.Core.csproj" />
   </ItemGroup>
 
 </Project>

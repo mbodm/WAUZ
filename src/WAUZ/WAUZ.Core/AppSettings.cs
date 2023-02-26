@@ -1,7 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.Linq;
 
-namespace WAUZ.BL
+namespace WAUZ.Core
 {
     public sealed class AppSettings : IAppSettings
     {

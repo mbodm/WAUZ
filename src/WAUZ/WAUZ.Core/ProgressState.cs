@@ -1,14 +1,14 @@
-﻿namespace WAUZ.BL
+﻿namespace WAUZ.Core
 {
     public enum ProgressState
     {
         Started,
-        UnzipAddon,
-        UnzippedAddon,
+        ValidateZipFiles,
+        ValidatedZipFiles,
         ClearDestFolder,
         ClearedDestFolder,
-        MoveFromTempToDest,
-        MovedFromTempToDest,
+        UnzipAddon,
+        UnzippedAddon,
         Finished,
     }
 }

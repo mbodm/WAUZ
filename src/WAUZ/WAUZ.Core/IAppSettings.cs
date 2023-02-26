@@ -1,4 +1,4 @@
-﻿namespace WAUZ.BL
+﻿namespace WAUZ.Core
 {
     public interface IAppSettings
     {

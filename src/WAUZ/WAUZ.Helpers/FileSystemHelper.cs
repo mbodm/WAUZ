@@ -1,4 +1,4 @@
-﻿namespace WAUZ.BL
+﻿namespace WAUZ.Helpers
 {
     public sealed class FileSystemHelper : IFileSystemHelper
     {
@@ -89,13 +89,13 @@
                 return;
             }
 
-            // After some measurements this async approach seems to be around 3 times faster than
-            // the sync approach. Looks like a modern SSD/OS seems to be rather concurrent-friendly.
+            // After some measurements this async approach seems to be around 3 times faster than the
+            // sync approach. Looks like modern SSD/OS configurations are rather concurrent-friendly.
 
             var tasks = new List<Task>();
 
-            // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the
-            // task has not already started and since the sync method one-liner can not be cancelled anyway.
+            // No need for a ThrowIfCancellationRequested() here, since Task.Run() cancels on its own (if the
+            // task has not already started) and since the sync method one-liner can not be cancelled anyway.
 
             tasks.AddRange(files.Select(s => Task.Run(() => File.Delete(s), cancellationToken)));
             tasks.AddRange(directories.Select(s => Task.Run(() => Directory.Delete(s, true), cancellationToken)));
@@ -122,78 +122,9 @@
             }
         }
 
-        public Task MoveFolderContentAsync(string sourceFolder, string destFolder, CancellationToken cancellationToken = default)
+        public IEnumerable<string> GetAllZipFilesInFolder(string folder)
         {
-            if (string.IsNullOrWhiteSpace(sourceFolder))
-            {
-                throw new ArgumentException($"'{nameof(sourceFolder)}' cannot be null or whitespace.", nameof(sourceFolder));
-            }
-
-            if (string.IsNullOrWhiteSpace(destFolder))
-            {
-                throw new ArgumentException($"'{nameof(destFolder)}' cannot be null or whitespace.", nameof(destFolder));
-            }
-
-            if (!Directory.Exists(sourceFolder))
-            {
-                throw new InvalidOperationException("Given source folder not exists.");
-            }
-
-            if (!Directory.Exists(destFolder))
-            {
-                throw new InvalidOperationException("Given destination folder not exists.");
-            }
-
-            sourceFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(sourceFolder));
-            destFolder = Path.TrimEndingDirectorySeparator(Path.GetFullPath(destFolder));
-
-            var sourceFiles = Directory.EnumerateFiles(sourceFolder);
-            var sourceDirectories = Directory.EnumerateDirectories(sourceFolder);
-
-            if (!sourceFiles.Any() && !sourceDirectories.Any())
-            {
-                return Task.CompletedTask;
-            }
-
-            var buildDestPathFunc = (string sourcePath, string destFolder) =>
-            {
-                // In .NET the Path.GetFileName() method is used for both:
-                // To get a file´s name, as well as to get a folder´s name.
-
-                var fileOrFolderName = Path.GetFileName(sourcePath);
-                var destPath = Path.Combine(destFolder, fileOrFolderName);
-
-                return Path.TrimEndingDirectorySeparator(destPath);
-            };
-
-            var tasks = new List<Task>();
-
-            // No need for ThrowIfCancellationRequested() here, since Task.Run() cancels on its own if the
-            // task has not already started and since the sync method one-liner can not be cancelled anyway.
-
-            tasks.AddRange(sourceFiles.Select(s => Task.Run(() => File.Move(s, buildDestPathFunc(s, destFolder)), cancellationToken)));
-            tasks.AddRange(sourceDirectories.Select(s => Task.Run(() => Directory.Move(s, buildDestPathFunc(s, destFolder)), cancellationToken)));
-
-            return Task.WhenAll(tasks);
-        }
-
-        public async Task<string> CreateTempFolderAsync(CancellationToken cancellationToken = default)
-        {
-            var userTempFolder = Path.GetFullPath(Path.GetTempPath());
-
-            var tempFolder = Path.TrimEndingDirectorySeparator(Path.Combine(userTempFolder, "MBODM.WAUZ.tmp"));
-
-            // Using a task for Delete() seems fine, since the I/O operation duration is not predictable.
-            // But creating tasks for Exists() and CreateDirectory() is not worth the task startup time.
-
-            if (Directory.Exists(tempFolder))
-            {
-                await Task.Run(() => Directory.Delete(tempFolder, true), cancellationToken).ConfigureAwait(false);
-            }
-
-            Directory.CreateDirectory(tempFolder);
-
-            return tempFolder;
+            return Directory.EnumerateFiles(folder, "*.zip", SearchOption.TopDirectoryOnly);
         }
     }
 }

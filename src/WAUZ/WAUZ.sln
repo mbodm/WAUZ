@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ", "WAUZ\WAUZ.csproj", "{004D130F-C559-484B-800A-32DAC74B3547}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ.BL", "WAUZ.BL\WAUZ.BL.csproj", "{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ.Core", "WAUZ.Core\WAUZ.Core.csproj", "{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WAUZ.Helpers", "WAUZ.Helpers\WAUZ.Helpers.csproj", "{1B2BB6A6-82FF-4614-B2E4-35A01B0260C3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA0AD55A-54AF-4DDB-BA8F-A94FB7FC4DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1B2BB6A6-82FF-4614-B2E4-35A01B0260C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B2BB6A6-82FF-4614-B2E4-35A01B0260C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1B2BB6A6-82FF-4614-B2E4-35A01B0260C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1B2BB6A6-82FF-4614-B2E4-35A01B0260C3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
