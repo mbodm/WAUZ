@@ -113,6 +113,6 @@ Unzip all addons first, into a single temp folder. Then remove all files/folders
 > - But maybe add additional infos when logging an exception (like the selected folders, etc).
 > - :heavy_check_mark: !!! Useless since 1.0.3 !!! --> Maybe implement checkbox option to remove all content of Destination-Folder before unzip?
 > - :heavy_check_mark: !!! Useless since 1.0.3 !!! --> Do users really want/need that? (Maybe the above "Open in Explorer" option is enough here)
-> - :heavy_check_mark: Missing or wrong selected folders lead to "Error occurred" UI status. Keep this behaviour?
+> - :heavy_check_mark: Missing or wrong selected folders lead to "Error occurred" UI status. Keep this behaviour? Descission: No.
 > - Maybe add a ListView with CheckBoxes to select zip files, before unzipping?
 > - :heavy_check_mark: Change TextBox placeholder text.
