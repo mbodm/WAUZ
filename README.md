@@ -108,11 +108,11 @@ Unzip all addons first, into a single temp folder. Then remove all files/folders
 > - :x: Decided against previous point since the log file not exists 99% of the time, since its just created on hard errors.
 > - :x: Decided against previous point since the settings shall not be prominent (in contrast to the WADM config file).
 > - :heavy_check_mark: !!! Added in 1.0.3, removed in 1.0.4 !!! Maybe implement some temp folder cleanup check, before unzipping?
-> - :heavy_check_mark: !!! Added in 1.0.3, removed in 1.0.4 !!! To cleanup any existing/old temp folders if app was closed too early in previous session.
+> - :heavy_check_mark: !!! Added in 1.0.3, removed in 1.0.4 !!! To cleanup any old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
 > - But maybe add additional infos when logging an exception (like the selected folders, etc).
-> - :heavy_check_mark: !! Unnecessary after 1.0.3 !! --> Maybe implement option (checkbox) to remove all content from Destination-Folder before unzip?
-> - :heavy_check_mark: !! Unnecessary after 1.0.3 !! --> Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
+> - :heavy_check_mark: !! Useless after 1.0.3 !! --> Maybe implement option (checkbox) to remove all content from Destination-Folder before unzip?
+> - :heavy_check_mark: !! Useless after 1.0.3 !! --> Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
 > - :heavy_check_mark: Missing or wrong selected folders lead to "Error occurred" UI status. Keep this behaviour?
 > - Maybe add a ListView with CheckBoxes to select zip files, before unzipping?
 > - :heavy_check_mark: Change TextBox placeholder text.
