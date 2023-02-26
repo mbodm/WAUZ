@@ -111,8 +111,8 @@ Unzip all addons first, into a single temp folder. Then remove all files/folders
 > - :heavy_check_mark: !!! Added in 1.0.3, removed in 1.0.4 !!! To cleanup any old temp folders if app was closed too early in previous session.
 > - Add more log infos (logfile size?) to better reproduce what happened? Not meant as "log everything".
 > - But maybe add additional infos when logging an exception (like the selected folders, etc).
-> - :heavy_check_mark: !! Useless > 1.0.3 !! --> Maybe implement option (checkbox) to remove all content from Destination-Folder before unzip?
-> - :heavy_check_mark: !! Useless > 1.0.3 !! --> Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
+> - :heavy_check_mark: !!! Useless since 1.0.3 !!! --> Maybe implement checkbox option to remove all content from Destination-Folder before unzip?
+> - :heavy_check_mark: !!! Useless since 1.0.3 !!! --> Do users really want/need that? (Maybe the above "open in Explorer" option is enough here)
 > - :heavy_check_mark: Missing or wrong selected folders lead to "Error occurred" UI status. Keep this behaviour?
 > - Maybe add a ListView with CheckBoxes to select zip files, before unzipping?
 > - :heavy_check_mark: Change TextBox placeholder text.
