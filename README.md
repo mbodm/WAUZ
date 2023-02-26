@@ -16,7 +16,11 @@ It´s just a typical ".exe file" Windows application. Just download the newest r
 - Select the folder which contains the addon zip files (Source-Folder). Typically some temporary download folder.
 - Select the folder to unzip the addons into (Destination-Folder). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
-- Hint: Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
+
+
+Some additional hint here:
+
+Bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
 
 :warning:
 
