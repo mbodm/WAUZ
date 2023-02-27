@@ -64,7 +64,7 @@ You can choose between _self-contained_ and _framework-dependent_ .NET applicati
 
 ### Important notes when using release version 1.0.3 or higher
 
-The way WAUZ works and doing its unzip job (under the hood) has completely changed in the 1.0.3 release version! Therefore i need to explain this a bit more in detail here.
+The way WAUZ works and doing its unzip job (under the hood) has completely changed since the 1.0.3 release version! Therefore i need to explain this a bit more in detail here.
 
 At the moment there is still some ongoing development and descission finding in progress. Therefore i quickly out-commented all the text, that already existed here. More to come. Stay tuned!
 
