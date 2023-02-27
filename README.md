@@ -20,7 +20,7 @@ A tiny unzip tool for World of Warcraft addons
 
 :warning:
 
-Please also read this [important notes](#important-notes-when-using-release-version-103-or-higher) below, to make sure you not accidentally loose data! Because all releases after 1.0.2 will clear all existing content inside the selected destination folder, by design. And that notes will show why.
+Please also read this [important notes](#important-notes-when-using-release-version-103-or-higher) below, to make sure you not accidentally loose data! Because all releases after 1.0.2 will clear all existing content inside the selected destination folder, by design. And that notes tell you why.
 
 ### Why it exists
 I developed a download manager for World of Warcraft addons, called [WADM](https://github.com/mbodm/wadm), over a decade ago. For many many years WADM handled all of your needs with ease, when it comes down to addon updating. But since Curse/Overwolf changed their political stance, alternative download managers (like mine, Ajour, WowUp, or others) no longer works with the https://www.curseforge.com site, or their REST web service. The only option is to use their own addon download manager. Many of us don´t want that, for different reasons.
