@@ -18,6 +18,7 @@ A tiny unzip tool for World of Warcraft addons
 - Press the "Unzip" button.
 
 :warning:
+
 Please also read this [important notes](#important-notes-when-using-release-version-103-or-higher) below, to make sure you not accidentally loose data! Because all releases after 1.0.2 will clear all existing content inside the selected destination folder, by design.
 
 ### Why it exists
