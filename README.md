@@ -39,7 +39,7 @@ A fast and easy way to get all the actual addon zip files is to bookmark all the
 
 There are not any other special requirements. All the release-binaries are compiled with _win-x64_ as target platform, assuming you are using some 64-bit Windows (and that's quite likely).
 
-You can choose between _self-contained_ and _framework-dependent_ .NET application builds, when downloading a release. If you want to run the _framework-dependent_ version, you need (as additional requirement) an installed .NET 6 runtime. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
+You can choose between _self-contained_ and _framework-dependent_ .NET application builds, when downloading a release. If you want to run the _framework-dependent_ version, you need (as additional requirement) the .NET 6 runtime installed on your machine. You can find more information about that topic on the [Releases](https://github.com/mbodm/wauz/releases) page.
 
 ### Notes
 - WAUZ saves your selected folders automatically in a settings file when you close the app.
