@@ -15,7 +15,7 @@ A tiny unzip tool for World of Warcraft addons
 - Start WAUZ
 - Select the folder which contains the addon zip files (_Source-Folder_). Typically some temporary download folder.
 - Select the folder to unzip the addons into (_Destination-Folder_). Typically the World of Warcraft AddOns folder.
-- Press the "Unzip" button.
+- Press the _Unzip_ button.
 
 :warning:
 
