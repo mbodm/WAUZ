@@ -7,7 +7,8 @@ A tiny unzip tool for World of Warcraft addons
 
 - It´s a very simple and tiny .NET 6 application named WAUZ (**W**orld of Warcraft **A**ddons **U**n**Z**ip).
 - It´s used to unzip a bunch of downloaded zip files, located in one folder, into another folder. In this case the zip files are addons for the popular [World of Warcraft](https://worldofwarcraft.com) MMORPG game.
-- It´s just a typical ".exe file" Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that. It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. 
+- It´s just a typical ".exe file" Windows application. Just download the newest release, unzip and run it. That´s it. No installer, setup or something like that.
+It´s sole purpose is to extract zip files into a folder. Nothing else. It´s just there to make your life a little bit easier. 
 
 ### How it works
 
