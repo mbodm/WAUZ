@@ -17,7 +17,7 @@ A tiny unzip tool for World of Warcraft addons
 - Select the folder to unzip the addons into (_Destination-Folder_). Typically the World of Warcraft AddOns folder.
 - Press the "Unzip" button.
 
-:warning: If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) below! :warning:
+:warning: If you are using release version 1.0.3 or higher, please also read [this important notes](#important-notes-when-using-release-version-103-or-higher) below!
 
 <!-- about a possible "data loss" inside the selected destination folder! -->
 
