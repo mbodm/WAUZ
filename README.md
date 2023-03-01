@@ -72,7 +72,7 @@ The short version:
 
 With the release of version 1.0.3 (and onwards) WAUZ now always clears the selected destination folder (removing all files and folders inside it), before the zip files are extracted into the destination folder. In 99% of all cases this should be no problem, because the destination folder should be just a "working folder" for binary stuff, solely used for the addon "applications".
 
-This applies also and foremost to the "World of Warcraft AddOns" folder (when used as destination folder in WAUZ). Typically that folder should not contain any sensible data, like personal data, documents, config files, and so on. Even the addons themselfes store their config files in another location (another specific folder inside the World of Warcraft installation folder).
+This applies also and foremost to the "World of Warcraft AddOns" folder (when used as destination folder in WAUZ). Typically that folder should not contain any sensible data, like personal data, documents, config files, and so on. Even the addons themselfes store their config files in another location (another specific folder inside the World of Warcraft installation folder). The World of Warcraft developers structured their application exactly with that intension in mind.
 
 In short: The destination folder should be used the same way as World of Warcraft itself use its "AddOns" folder -> A specific folder for the addon binaries itself and nothing else.
 
