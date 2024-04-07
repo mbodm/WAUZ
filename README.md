@@ -31,7 +31,11 @@ So, downloading the addons manually (which is not the time consuming bottleneck 
 
 Some additional hint here (since this has nothing to do with the tool per se):
 
-A fast and easy way to get all the actual addon zip files is to bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon´s download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addon versions very fast, without much effort. This way you quickly have all of them in a single folder. The process of manually unzipping them is way more time consuming. But that´s the moment when WAUZ comes to rescue. :wink:
+A fast and easy way to get all the actual addon zip files is to bookmark all the direct download sites, for every addon, in your browser. Especially for https://www.curseforge.com you can bookmark an addon's download site directly. The addon download immediately starts, after clicking the bookmark. This helps a lot to get all the latest addons very fast, without much effort.
+
+Even better: Most browsers can group bookmarks into some form of "group" or "folder", which offers the possibility to open all bookmarks of the group, with a single click. The browser opens all the bookmarks in different tabs and the user can just click tab by tab and press the "save" button.
+
+This way you quickly have all addon zip files in a single folder. The process of manually unzipping them is way more time consuming. But that's the moment when WAUZ comes to rescue. :wink:
 
 ### Requirements
 
