@@ -84,6 +84,8 @@ But: If you stored anything important in the selected destination folder, for wh
 
 The long (technical background) version:
 
+Todo...
+
 <!--
 
 How it worked before version 1.0.3 was released?
